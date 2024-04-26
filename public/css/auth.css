@@ -1,0 +1,81 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "Poppins", sans-serif;
+    box-sizing: border-box;
+}
+
+.login-container {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-box {
+    width: 330px;
+    padding: 25px;
+    color: #06152B;
+}
+
+.login-box h1 {
+    font-family: "Proxima Nova", "Poppins", sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 27px;
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.login-box p {
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 18px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.login-box form {
+    width: 100%;
+}
+
+.login-box form input {
+    padding: 22px 30px;
+    border: 1px solid #D9E1E7;
+    border-radius: 15px;
+    margin-bottom: 16px;
+    width: 100%;
+    display: inline-block;
+    color: #06152B;
+}
+
+.login-box form input[type=submit] {
+    background-color: #06152B;
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.login-box .remember-me-checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    gap: 10px;
+    accent-color: #06152B;
+}
+
+.login-box .remember-me-checkbox input[type=checkbox] {
+    height: 20px;
+    width: 20px;
+}
+
+
+.login-box a {
+    text-decoration: none;
+    color: #06152B;
+}

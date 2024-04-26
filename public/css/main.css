@@ -1,0 +1,486 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "Poppins", sans-serif;
+    box-sizing: border-box;
+}
+
+/* Login Styles */
+
+.login-container {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-box {
+    width: 330px;
+    padding: 25px;
+    color: #06152B;
+}
+
+.login-box h1 {
+    font-family: "Proxima Nova", "Poppins", sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 27px;
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.login-box p {
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 18px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.login-box form {
+    width: 100%;
+}
+
+.login-box form input {
+    padding: 22px 30px;
+    border: 1px solid #D9E1E7;
+    border-radius: 15px;
+    margin-bottom: 16px;
+    width: 100%;
+    display: inline-block;
+    color: #06152B;
+}
+
+.login-box form input[type=button] {
+    background-color: #06152B;
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.login-box .remember-me-checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    gap: 10px;
+    accent-color: #06152B;
+}
+
+.login-box .remember-me-checkbox input[type=checkbox] {
+    height: 20px;
+    width: 20px;
+}
+
+
+.login-box a {
+    text-decoration: none;
+    color: #06152B;
+}
+
+/* Navbar Styles */
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 60px 80px;
+}
+
+.menu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 60px;
+}
+
+.menu a {
+    text-decoration: none;
+    color: #050505;
+    font-size: 19px;
+    font-weight: 400;
+    line-height: 22px;
+}
+
+.menu-items.active a {
+    font-weight: 500;
+}
+
+.user-avatar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.avatar {
+    background-color: #384455;
+    height: 64px;
+    width: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-avatar p {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 400;
+    line-height: 22px;
+}
+
+.mobile-menu {
+    display: none;
+    position: relative;
+}
+
+.mobile-menu-items {
+    display: none;
+}
+
+@media (max-width: 990px) {
+    .navbar {
+        padding: 40px;
+    }
+
+    .mobile-nav .menu {
+        display: none;
+    }
+
+    .mobile-menu {
+        display: block;
+    }
+
+    .mobile-menu i {
+        font-size: 40px;
+    }
+
+    .mobile-menu:hover .mobile-menu-items {
+        display: block;
+    }
+
+    .mobile-menu-items {
+        position: absolute;
+        top: 40px;
+        background-color: #fff;
+        border: 1px solid #DCDCDC;
+        width: 200px;
+        z-index: 15;
+        border-radius: 15px;
+    }
+
+
+    .menu-items {
+        background-color: #fff;
+        border-bottom: 1px solid #DCDCDC;
+        padding: 10px;
+    }
+
+    .menu-items a {
+        text-decoration: none;
+        color: #050505;
+    }
+
+    .user-avatar p {
+        display: none;
+    }
+}
+
+.main-banner {
+    width: 770px;
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: red;
+    border-radius: 25px;
+    margin: 40px auto;
+}
+
+.main-banner>div {
+    width: 50%;
+}
+
+.banner-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: start;
+    height: 100%;
+}
+
+.banner-image {
+    text-align: center;
+}
+
+.banner-section .text-box {
+    background-color: rgba(255, 255, 255, 0.9);
+    width: 350px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 16px;
+    border-radius: 20px;
+}
+
+.text-box .banner-text {
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 19px;
+    text-align: left;
+}
+
+.text-box .banner-number {
+    background-color: #B01E248F;
+    border-radius: 50%;
+    height: 52px;
+    width: 52px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.text-box .banner-number p {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 22px;
+    display: inline-block;
+    color: #050505;
+}
+
+.heading-box {
+    width: 350px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.heading-box .banner-heading {
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 36px;
+    letter-spacing: 4px;
+    color: #fff;
+}
+
+.heading-box .redirect-button {
+    background-color: rgba(255, 255, 255, 0.9);
+    width: 72px;
+    height: 72px;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+}
+
+.main-banner-1 {
+    background-color: #B01E24;
+}
+
+.main-banner-2 {
+    background-color: #283792;
+}
+
+.add-button {
+    background-color: #06152B;
+    color: #fff;
+    height: 133px;
+    width: 133px;
+    border: 0;
+    font-size: 35px;
+    margin: 40px 0;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.add-modal {
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    z-index: 20;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: none;
+}
+
+.show {
+    display: flex;
+}
+
+.backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: #000;
+    opacity: 0.6;
+    z-index: 21;
+}
+
+.modal-box {
+    position: relative;
+    z-index: 25;
+    background: #E1E3E5;
+    border-radius: 25px;
+    width: 770px;
+    padding: 35px 0;
+}
+
+.modal-inputs {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 35px 0;
+}
+
+.modal-inputs>div {
+    width: 260px;
+}
+
+.custom-file-input {
+    width: 260px;
+    height: 66px;
+    border: 1px dashed rgba(0, 0, 0, 0.3);
+    background-color: rgba(128, 159, 184, 0.1);
+    padding: 0 25px;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 15px;
+    border-radius: 15px;
+}
+
+#fileInput {
+    display: none;
+}
+
+.selected-file {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.upload-icon {
+    height: 35px;
+    width: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(56, 68, 85, 1);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.add-modal .text-input input {
+    width: 260px;
+    height: 66px;
+    border: 1px dashed rgba(0, 0, 0, 0.3);
+    background-color: rgba(128, 159, 184, 0.1);
+    padding: 0 25px;
+    border-radius: 15px;
+}
+
+.colors-input {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0 15px;
+
+}
+
+.colors-input label {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 22px;
+    text-align: left;
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.colors-input input {
+    display: none;
+}
+
+.colorBox {
+    width: 110px;
+    height: 32px;
+    background-color: #fff;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 17px;
+    text-align: left;
+    color: rgba(128, 159, 184, 1);
+    padding: 9px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 5px;
+}
+
+.add-modal .modal-button {
+    float: right;
+    margin-top: 35px;
+    padding-right: 84px;
+}
+
+.add-modal .modal-button .submit-button {
+    width: 70px;
+    height: 70px;
+    background-color: rgba(6, 21, 43, 0.74);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 0;
+    border-radius: 50%;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 19px;
+}
+
+.close-button {
+    color: rgba(61, 61, 61, 0.75);
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 26px;
+    cursor: pointer;
+}
+
+
+@media (max-width: 770px) {
+    .main-banner {
+        flex-wrap: wrap;
+        width: 90%;
+        height: auto;
+    }
+
+    .main-banner>div {
+        width: 100%;
+    }
+
+    .banner-section {
+        align-items: center;
+        height: 330px;
+    }
+
+    .modal-box {
+        width: 90%;
+    }
+}
