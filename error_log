@@ -1,0 +1,1 @@
+[26-Apr-2024 09:36:51 America/New_York] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.2.0". You are running 8.1.28. in /home/wheexjbj/malper.wheelstiressuperstore.com/vendor/composer/platform_check.php on line 24

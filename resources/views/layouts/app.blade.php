@@ -56,8 +56,8 @@
             </div>
             <div class="menu-items">
                 <a href="#">Statistics</a>
-                <a href="#" onclick="document.getElementById('logout').submit()">Logout</a>
-                <form action="{{route('logout')}}" method="post" id="logout">@csrf</form>
+                {{--<a href="#" onclick="document.getElementById('logout').submit()">Logout</a>--}}
+                {{--<form action="{{route('logout')}}" method="post" id="logout">@csrf</form>--}}
             </div>
         </div>
         <div class="user-avatar">
