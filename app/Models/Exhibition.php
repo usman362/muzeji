@@ -8,4 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class Exhibition extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'title',
+        'description',
+        'user_id',
+        'project_id'
+    ];
+
+    public function pois()
+    {
+        return $this->hasMany(POI::class, 'exhibition_id', 'id');
+    }
 }

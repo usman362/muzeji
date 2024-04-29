@@ -17,6 +17,8 @@
         rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Proxima+Nova" rel="stylesheet" />
     <link href="{{ asset('css/main.css') }}" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     {{-- @vite(['resources/sass/app.scss', 'resources/js/app.js']) --}}
     @stack('styles')
 </head>
@@ -24,20 +26,27 @@
 <body>
 
     <div class="navbar mobile-nav">
-        <div class="mobile-menu">
+        <div class="mobile-menu dropdown">
             <div class="menu-icon"><i class="fa fa-bars"></i></div>
-            <div class="mobile-menu-items">
+            <div class="submenu mobile-menu-items">
                 <div class="menu-items active">
-                    <a href="#">Home</a>
+                    <a href="{{ route('home') }}">Home</a>
+                </div>
+                <div class="menu-items sub-dropdown">
+                    <a href="javascript:void(0)">Project</a>
+                    <div class="dropdown-submenu">
+                        @foreach ($projects as $project)
+                            <div class="menu-items">
+                                <a href="{{ route('projects.index', $project->id) }}">{{ $project->title }}</a>
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
                 <div class="menu-items">
-                    <a href="#">Project</a>
+                    <a href="{{ route('settings.index') }}">Settings</a>
                 </div>
                 <div class="menu-items">
-                    <a href="#">Settings</a>
-                </div>
-                <div class="menu-items">
-                    <a href="#">Statistics</a>
+                    <a href="{{ route('settings.statistics') }}">Statistics</a>
                 </div>
             </div>
         </div>
@@ -46,30 +55,53 @@
         </div>
         <div class="menu">
             <div class="menu-items active">
-                <a href="#">Home</a>
+                <a href="{{ route('home') }}">Home</a>
+            </div>
+            <div class="menu-items dropdown">
+                <a href="javascript:void(0)">Project</a>
+                <div class="submenu">
+                    @foreach ($projects as $project)
+                        <div class="menu-items">
+                            <a href="{{ route('projects.index', $project->id) }}">{{ $project->title }}</a>
+                        </div>
+                    @endforeach
+                </div>
             </div>
             <div class="menu-items">
-                <a href="#">Project</a>
+                <a href="{{ route('settings.index') }}">Settings</a>
             </div>
             <div class="menu-items">
-                <a href="#">Settings</a>
-            </div>
-            <div class="menu-items">
-                <a href="#">Statistics</a>
-                {{--<a href="#" onclick="document.getElementById('logout').submit()">Logout</a>--}}
-                {{--<form action="{{route('logout')}}" method="post" id="logout">@csrf</form>--}}
+                <a href="{{ route('settings.statistics') }}">Statistics</a>
             </div>
         </div>
-        <div class="user-avatar">
+        <div class="user-avatar dropdown">
             <div class="avatar">
-                <img src="{{asset('images/user.png')}}" alt="avatar" />
+                <img src="{{ asset('images/user.png') }}" alt="avatar" />
+                <div class="online-dot"></div>
             </div>
-            <p>HELLO ROK</p>
+            <p>{{ auth()->user()->name ?? 'User' }}</p>
+            <div class="submenu">
+                <div class="menu-items">
+                    <a href="javascript:void(0)" onclick="document.getElementById('logout').submit()">Logout</a>
+                    <form action="{{ route('logout') }}" method="post" id="logout">@csrf</form>
+                </div>
+            </div>
         </div>
     </div>
 
     @yield('content')
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <script>
+        @if (session()->has('success'))
+            toastr.success("{{ session('success') }}");
+        @endif
+        @if (session()->has('error'))
+            toastr.error("{{ session('error') }}");
+        @endif
+    </script>
     @stack('scripts')
 </body>
 

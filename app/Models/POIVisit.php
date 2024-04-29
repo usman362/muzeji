@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class POIVisit extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'poi_id',
+        'project_id',
+        'device',
+        'device_type',
+        'visit_time'
+    ];
 }
