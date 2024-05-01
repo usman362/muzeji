@@ -16,17 +16,18 @@
                 </div>
                 <div class="submenu project-submenu">
                     @foreach ($projects as $key => $project)
-                        <a href="{{url('statistics')}}?project={{$project->id}}" class="submenu-item">
-                            {{$project->title}} <i class="fa fa-check"></i>
+                        <a href="{{ url('statistics') }}?project={{ $project->id }}" class="submenu-item">
+                            {{ $project->title }} <i class="fa fa-check"></i>
                         </a>
                     @endforeach
                 </div>
             </div>
+
             <div class="line-chart-section">
                 <div class="chart-heading">
                     <div>
                         <p>Total views of this exebition</p>
-                        <h1>5.987,37</h1>
+                        <h1>{{ $computerVisits + $phoneVisits + $tabletVisits }}</h1>
                     </div>
                     <i class="fa fa-info-circle"></i>
                 </div>
@@ -37,7 +38,7 @@
                     <div class="chart-heading">
                         <div>
                             <p>Devices</p>
-                            <h1>10.000</h1>
+                            <h1>{{ $totalDevices }}</h1>
                             <small>Secondary text</small>
                         </div>
                         <i class="fa fa-info-circle"></i>
@@ -61,116 +62,19 @@
             <h2>Projects History:</h2>
         </div>
         <div class="statistics-project-table">
+            @foreach($histories as $history)
             <div class="table-row">
                 <div class="place-title">
                     <input type="checkbox" />
                     <div class="title">
-                        <div>Ana changed address description in Grad Velenje.</div>
+                        <div>{{$history->description}}</div>
                         <div class="time-badge">
                             <i class="fa fa-clock-o" aria-hidden="true"></i> 8 days ago
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="table-row">
-                <div class="place-title">
-                    <input type="checkbox" />
-                    <div class="title">
-                        <div>Ana changed address description in Grad Velenje.</div>
-                        <div class="time-badge">
-                            <i class="fa fa-clock-o" aria-hidden="true"></i> 8 days ago
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="table-row">
-                <div class="place-title">
-                    <input type="checkbox" />
-                    <div class="title">
-                        <div>Ana changed address description in Grad Velenje.</div>
-                        <div class="time-badge">
-                            <i class="fa fa-clock-o" aria-hidden="true"></i> 8 days ago
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="table-row">
-                <div class="place-title">
-                    <input type="checkbox" />
-                    <div class="title">
-                        <div>Ana changed address description in Grad Velenje.</div>
-                        <div class="time-badge">
-                            <i class="fa fa-clock-o" aria-hidden="true"></i> 8 days ago
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="table-row">
-                <div class="place-title">
-                    <input type="checkbox" />
-                    <div class="title">
-                        <div>Ana changed address description in Grad Velenje.</div>
-                        <div class="time-badge">
-                            <i class="fa fa-clock-o" aria-hidden="true"></i> 8 days ago
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="table-row">
-                <div class="place-title">
-                    <input type="checkbox" />
-                    <div class="title">
-                        <div>Ana changed address description in Grad Velenje.</div>
-                        <div class="time-badge">
-                            <i class="fa fa-clock-o" aria-hidden="true"></i> 8 days ago
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="table-row">
-                <div class="place-title">
-                    <input type="checkbox" />
-                    <div class="title">
-                        <div>Ana changed address description in Grad Velenje.</div>
-                        <div class="time-badge">
-                            <i class="fa fa-clock-o" aria-hidden="true"></i> 8 days ago
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="table-row">
-                <div class="place-title">
-                    <input type="checkbox" />
-                    <div class="title">
-                        <div>Ana changed address description in Grad Velenje.</div>
-                        <div class="time-badge">
-                            <i class="fa fa-clock-o" aria-hidden="true"></i> 8 days ago
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="table-row">
-                <div class="place-title">
-                    <input type="checkbox" />
-                    <div class="title">
-                        <div>Ana changed address description in Grad Velenje.</div>
-                        <div class="time-badge">
-                            <i class="fa fa-clock-o" aria-hidden="true"></i> 8 days ago
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="table-row">
-                <div class="place-title">
-                    <input type="checkbox" />
-                    <div class="title">
-                        <div>Ana changed address description in Grad Velenje.</div>
-                        <div class="time-badge">
-                            <i class="fa fa-clock-o" aria-hidden="true"></i> 8 days ago
-                        </div>
-                    </div>
-                </div>
-            </div>
+            @endforeach
         </div>
     </div>
 @endsection
@@ -182,7 +86,11 @@
                 trigger: "axis",
             },
             legend: {
-                data: ["Email", "Union Ads", "Video Ads", "Direct", "Search Engine"],
+                data: [
+                    @foreach ($visits as $visit)
+                        "{{ $visit[0]->poi->detail->title ?? '' }}",
+                    @endforeach
+                ],
                 top: "25px",
             },
             grid: {
@@ -195,37 +103,24 @@
             xAxis: {
                 type: "category",
                 boundaryGap: false,
-                data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                data: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
             },
             yAxis: {
                 type: "value",
             },
-            series: [{
-                    name: "Email",
-                    type: "line",
-                    data: [120, 132, 101, 134, 90, 230, 210],
-                },
-                {
-                    name: "Union Ads",
-                    type: "line",
+            series: [
+                @foreach ($visits as $visit)
+                    {
+                        name: "{{ $visit[0]->poi->detail->title ?? '' }}",
+                        type: "line",
+                        data: [
+                            @for ($i=1; $i<=12; ++$i)
+                            {{\App\Helpers\Helpers::getViews($visit[0]->poi_id,$i)}},
+                            @endfor
+                        ],
 
-                    data: [220, 182, 191, 234, 290, 330, 310],
-                },
-                {
-                    name: "Video Ads",
-                    type: "line",
-                    data: [150, 232, 201, 154, 190, 330, 410],
-                },
-                {
-                    name: "Direct",
-                    type: "line",
-                    data: [320, 332, 301, 334, 390, 330, 320],
-                },
-                {
-                    name: "Search Engine",
-                    type: "line",
-                    data: [820, 932, 901, 934, 1290, 1330, 1320],
-                },
+                    },
+                @endforeach
             ],
         };
 
@@ -246,24 +141,16 @@
                 type: "pie",
                 radius: "50%",
                 data: [{
-                        value: 1048,
-                        name: "Search Engine"
+                        value: {{ $computerVisits }},
+                        name: "Computer"
                     },
                     {
-                        value: 735,
-                        name: "Direct"
+                        value: {{ $tabletVisits }},
+                        name: "Tablet"
                     },
                     {
-                        value: 580,
-                        name: "Email"
-                    },
-                    {
-                        value: 484,
-                        name: "Union Ads"
-                    },
-                    {
-                        value: 300,
-                        name: "Video Ads"
+                        value: {{ $phoneVisits }},
+                        name: "Phone"
                     },
                 ],
                 emphasis: {

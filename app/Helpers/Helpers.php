@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\POIVisit;
 use Config;
 use Illuminate\Support\Str;
 
@@ -21,6 +22,11 @@ class Helpers
 
     return $filePath;
 
+  }
+
+  public static function getViews($id,$month){
+    $views = POIVisit::where('poi_id',$id)->whereMonth('visit_time',$month)->whereYear('visit_time',date("Y"))->count();
+    return $views;
   }
 
 }

@@ -16,4 +16,9 @@ class POIVisit extends Model
         'device_type',
         'visit_time'
     ];
+
+    public function poi()
+    {
+        return $this->belongsTo(POI::class, 'poi_id', 'id');
+    }
 }

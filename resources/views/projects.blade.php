@@ -13,7 +13,7 @@
                         <div class="title">{{$exhibition->title}}</div>
                     </div>
                     <div class="details-button">
-                        <a href=""><button class="stats-button">Stats</button>
+                        <a href="{{url('statistics')}}?exhibition={{$exhibition->id}}"><button class="stats-button">Stats</button>
                             <a href="{{ route('poi.index', $exhibition->id) }}"><button class="view-button">View</button></a>
                     </div>
                 </div>
