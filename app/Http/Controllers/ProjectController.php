@@ -235,6 +235,7 @@ class ProjectController extends Controller
     {
         $url = URL::to('/') . '/poi/' . $short_code . '/viewpoint';
         $pngImage = QrCode::size(400)->format('svg')->generate($url);
+        Storage::disk('public')->makeDirectory('qrcodes');
         $fileName = 'qr_code.svg';
         $fileDest = storage_path('app/public/qrcodes/' . $fileName);
 
