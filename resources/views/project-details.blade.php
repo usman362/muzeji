@@ -19,16 +19,19 @@
                         </div>
                     </div>
                     <div class="action-buttons">
-                        <a href="javascript:void(0)">
+                        <a href="{{route('qrcode.download',$pois->short_code)}}">
                             <img src="{{ asset('images/download-icon.png') }}" alt="download-button" />
                         </a>
-                        <a href="{{ route('poi.show', $pois->id) }}">
+                        <a href="{{ route('poi.show', $pois->short_code) }}">
                             <img src="{{ asset('images/eye-icon.png') }}" alt="view-button" />
                         </a>
-                        <a href="javascript:void(0)" onclick="toggleModal()" class="edit-btn" data-id="{{ $pois->id }}"
+                        <a href="{{ route('poi.edit', $pois->id) }}">
+                            <img src="{{ asset('images/edit-icon.png') }}" alt="view-button" />
+                        </a>
+                        {{-- <a href="javascript:void(0)" onclick="toggleModal()" class="edit-btn" data-id="{{ $pois->id }}"
                             data-title="{{ $pois->detail->title ?? '' }}">
                             <img src="{{ asset('images/edit-icon.png') }}" alt="edit-button" />
-                        </a>
+                        </a> --}}
                         <form action="{{ route('poi.destroy', $pois->id) }}" onsubmit="confirmAction(event, () => event.target.submit())" method="post">
                             @method('DELETE')
                             @csrf

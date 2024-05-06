@@ -6,10 +6,15 @@ use App\Helpers\Helpers;
 use App\Models\Exhibition;
 use App\Models\POI;
 use App\Models\POIDetail;
+use App\Models\POIMedia;
 use App\Models\POIVisit;
 use App\Models\Project;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use Jenssegers\Agent\Agent;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class ProjectController extends Controller
 {
@@ -48,7 +53,7 @@ class ProjectController extends Controller
     public function poiIndex($id)
     {
         $projects = Project::all();
-        $exhibition = Exhibition::with(['pois' => function($q){
+        $exhibition = Exhibition::with(['pois' => function ($q) {
             $q->with('detail')->get();
         }])->find($id);
         return view('project-details', compact('projects', 'exhibition'));
@@ -72,7 +77,7 @@ class ProjectController extends Controller
 
         $poiDetail = POIDetail::updateOrCreate([
             'id' => $request->detail_id,
-        ],[
+        ], [
             'poi_id' => $poi->id,
             'title' => $request->title,
             'language' => 'en',
@@ -82,20 +87,77 @@ class ProjectController extends Controller
         return back();
     }
 
-    public function poiShow(Request $request,$id)
+    public function poiShow(Request $request, $id)
     {
         $projects = Project::all();
-        $poi = POI::with('exhibition:id,project_id')->find($id);
+        $poi = POI::with('exhibition:id,project_id')->where('short_code', $id)->first();
         $agent = new Agent();
         $deviceType = $this->getDeviceType($agent);
-        POIVisit::updateOrCreate(['device' => $request->userAgent()],[
-            'poi_id' => $id,
+        POIVisit::updateOrCreate(['device' => $request->userAgent()], [
+            'poi_id' => $poi->id,
             'project_id' => $poi->exhibition->project_id ?? '',
             'device' => $request->userAgent(),
             'device_type' => $deviceType,
             'visit_time' => now(),
         ]);
-        return view('edit-details', compact('projects','poi'));
+        return view('poi-details', compact('projects', 'poi'));
+    }
+
+    public function poiEdit(Request $request, $id)
+    {
+        $projects = Project::all();
+        $poi = POI::with('exhibition:id,project_id')->find($id);
+        return view('edit-details', compact('projects', 'poi'));
+    }
+
+    public function poiUpdate(Request $request, $id)
+    {
+        $projects = Project::all();
+        $poi = POI::with('exhibition:id,project_id')->find($id);
+        foreach ($request->title as $key => $title) {
+            $detail = POIDetail::create([
+                'poi_id' => $id,
+                'title' => $title,
+                'description' => $request->description[$key],
+                'language' => $request->language[$key],
+            ]);
+            foreach ($request->logo as $logo) {
+                if ($logo) {
+                    POIMedia::where('poi_id', $id)->where('type', 'logo')->delete();
+                    $logoPath = Helpers::fileUpload($logo, 'images/poi-logo');
+                    POIMedia::create([
+                        'poi_id' => $id,
+                        'type' => 'logo',
+                        'media_url' => $logoPath,
+                    ]);
+                }
+            }
+
+            foreach ($request->video as $video) {
+                if ($video) {
+                    POIMedia::where('poi_id', $id)->where('type', 'video')->delete();
+                    $videoPath = Helpers::fileUpload($video, 'images/poi-videos');
+                    POIMedia::create([
+                        'poi_id' => $id,
+                        'type' => 'video',
+                        'media_url' => $videoPath,
+                    ]);
+                }
+            }
+
+            foreach ($request->object as $object) {
+                if ($object) {
+                    POIMedia::where('poi_id', $id)->where('type', 'object')->delete();
+                    $objectPath = Helpers::fileUpload($object, 'images/poi-objects');
+                    POIMedia::create([
+                        'poi_id' => $id,
+                        'type' => 'object',
+                        'media_url' => $objectPath,
+                    ]);
+                }
+            }
+        }
+        return back();
     }
 
     public function poiDestroy($id)
@@ -103,7 +165,7 @@ class ProjectController extends Controller
         $poi = POI::find($id);
         if ($poi->delete()) {
             session()->flash('success', 'POI has been Deleted Successfully!');
-        }else{
+        } else {
             session()->flash('error', 'Something Went Wrong!');
         }
         return back();
@@ -148,7 +210,8 @@ class ProjectController extends Controller
         return $randomShortCode;
     }
 
-    protected function generateQRHash() {
+    protected function generateQRHash()
+    {
         $uniqueId = uniqid();
         $hash = substr(md5($uniqueId), 0, 16);
 
@@ -165,6 +228,21 @@ class ProjectController extends Controller
             return 'Phone';
         } else {
             return 'Unknown';
+        }
+    }
+
+    public function qrcode_download(Project $redirect,$short_code)
+    {
+        $url = URL::to('/') . '/poi/' . $short_code . '/viewpoint';
+        $pngImage = QrCode::size(400)->format('svg')->generate($url);
+        $fileName = 'qr_code.svg';
+        $fileDest = storage_path('app/public/qrcodes/' . $fileName);
+
+        QrCode::size(400)->format('svg')->generate($url, $fileDest);
+        if (file_exists($fileDest)) {
+            return response()->download($fileDest, $fileName);
+        } else {
+            return response()->json(['error' => 'Failed to generate QR code'], 500);
         }
     }
 }

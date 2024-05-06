@@ -12,11 +12,13 @@
         <div class="statistics-container">
             <div class="projects-dropdown dropdown">
                 <div class="dropdown-box">
-                    Select the Project <i class="fa fa-chevron-down"></i>
+                    <span id="project-select">{{ !empty(request()->project) ? \App\Models\Project::find(request()->project)->title : 'Select the Project'}}</span>
+                    <i class="fa fa-chevron-down"></i>
                 </div>
-                <div class="submenu project-submenu">
+                <div class="submenu project-submenu" id="dropdown-items">
                     @foreach ($projects as $key => $project)
-                        <a href="{{ url('statistics') }}?project={{ $project->id }}" class="submenu-item">
+                        <a href="{{ $project->id == request()->project ? 'javascript:void(0)' : url('statistics').'?project='.$project->id }}" class="submenu-item {{$project->id == request()->project  ? 'active' : ''}}"
+                            onclick="onChangeDropdown(event,'project-select','{{ $project->title }}','dropdown-items' )">
                             {{ $project->title }} <i class="fa fa-check"></i>
                         </a>
                     @endforeach
@@ -62,18 +64,18 @@
             <h2>Projects History:</h2>
         </div>
         <div class="statistics-project-table">
-            @foreach($histories as $history)
-            <div class="table-row">
-                <div class="place-title">
-                    <input type="checkbox" />
-                    <div class="title">
-                        <div>{{$history->description}}</div>
-                        <div class="time-badge">
-                            <i class="fa fa-clock-o" aria-hidden="true"></i> 8 days ago
+            @foreach ($histories as $history)
+                <div class="table-row">
+                    <div class="place-title">
+                        <input type="checkbox" />
+                        <div class="title">
+                            <div>{{ $history->description }}</div>
+                            <div class="time-badge">
+                                <i class="fa fa-clock-o" aria-hidden="true"></i> 8 days ago
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
             @endforeach
         </div>
     </div>
@@ -81,6 +83,18 @@
 
 @push('scripts')
     <script>
+        function onChangeDropdown(event, id, value, parentId) {
+            console.log([event, id, value, parentId]);
+            Array.from(document.getElementById(parentId).children).forEach(
+                (element) => {
+                    element.classList.remove("active");
+                }
+            );
+            const selectDropdown = document.getElementById(id);
+            selectDropdown.innerText = value;
+            event.target.classList.add("active");
+        }
+
         const option = {
             tooltip: {
                 trigger: "axis",
@@ -114,8 +128,8 @@
                         name: "{{ $visit[0]->poi->detail->title ?? '' }}",
                         type: "line",
                         data: [
-                            @for ($i=1; $i<=12; ++$i)
-                            {{\App\Helpers\Helpers::getViews($visit[0]->poi_id,$i)}},
+                            @for ($i = 1; $i <= 12; ++$i)
+                                {{ \App\Helpers\Helpers::getViews($visit[0]->poi_id, $i) }},
                             @endfor
                         ],
 

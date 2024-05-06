@@ -20,6 +20,11 @@ class POI extends Model
         return $this->belongsTo(POIDetail::class, 'id','poi_id');
     }
 
+    public function details()
+    {
+        return $this->hasMany(POIDetail::class, 'poi_id','id');
+    }
+
     public function exhibition()
     {
         return $this->belongsTo(Exhibition::class, 'exhibition_id','id');

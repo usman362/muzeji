@@ -19,6 +19,7 @@
     <link href="{{ asset('css/main.css') }}" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
     {{-- @vite(['resources/sass/app.scss', 'resources/js/app.js']) --}}
     @stack('styles')
 </head>
@@ -94,6 +95,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script>
         @if (session()->has('success'))
             toastr.success("{{ session('success') }}");
@@ -101,6 +103,8 @@
         @if (session()->has('error'))
             toastr.error("{{ session('error') }}");
         @endif
+
+        $('.select2').select2();
     </script>
     @stack('scripts')
 </body>

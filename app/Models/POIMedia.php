@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class POIMedia extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'poi_id', 'type', 'media_url'
+    ];
 }
