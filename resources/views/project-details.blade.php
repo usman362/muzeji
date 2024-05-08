@@ -15,11 +15,11 @@
                     <div class="place-title">
                         <div class="row-number">{{ ++$key }}</div>
                         <div class="title">
-                            {{ $pois->detail->title ?? '' }}
+                            {{ $pois->title ?? '' }}
                         </div>
                     </div>
                     <div class="action-buttons">
-                        <a href="{{route('qrcode.download',$pois->short_code)}}">
+                        <a href="{{ route('qrcode.download', $pois->short_code) }}">
                             <img src="{{ asset('images/download-icon.png') }}" alt="download-button" />
                         </a>
                         <a href="{{ route('poi.show', $pois->short_code) }}">
@@ -32,7 +32,8 @@
                             data-title="{{ $pois->detail->title ?? '' }}">
                             <img src="{{ asset('images/edit-icon.png') }}" alt="edit-button" />
                         </a> --}}
-                        <form action="{{ route('poi.destroy', $pois->id) }}" onsubmit="confirmAction(event, () => event.target.submit())" method="post">
+                        <form action="{{ route('poi.destroy', $pois->id) }}"
+                            onsubmit="confirmAction(event, () => event.target.submit())" method="post">
                             @method('DELETE')
                             @csrf
                             <button>

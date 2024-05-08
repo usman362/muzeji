@@ -114,47 +114,60 @@ class ProjectController extends Controller
     {
         $projects = Project::all();
         $poi = POI::with('exhibition:id,project_id')->find($id);
-        foreach ($request->title as $key => $title) {
-            $detail = POIDetail::create([
+        if(!empty($request->main_title)){
+            $poi->title = $request->main_title;
+            $poi->save();
+        }
+        foreach ($request->main_id as $key => $mainId) {
+            $detail = POIDetail::updateOrCreate(['id' => $mainId],[
                 'poi_id' => $id,
-                'title' => $title,
+                'title' => $request->title[$key],
                 'description' => $request->description[$key],
                 'language' => $request->language[$key],
             ]);
-            foreach ($request->logo as $logo) {
-                if ($logo) {
-                    POIMedia::where('poi_id', $id)->where('type', 'logo')->delete();
-                    $logoPath = Helpers::fileUpload($logo, 'images/poi-logo');
-                    POIMedia::create([
-                        'poi_id' => $id,
-                        'type' => 'logo',
-                        'media_url' => $logoPath,
-                    ]);
-                }
+
+            if (isset($request->logo[$key])) {
+                POIMedia::where('detail_id', $detail->id)->where('type', 'logo')->delete();
+                $logoPath = Helpers::fileUpload($request->logo[$key], 'images/poi-logo');
+                POIMedia::create([
+                    'poi_id' => $id,
+                    'detail_id' => $detail->id,
+                    'type' => 'logo',
+                    'media_url' => $logoPath,
+                ]);
             }
 
-            foreach ($request->video as $video) {
-                if ($video) {
-                    POIMedia::where('poi_id', $id)->where('type', 'video')->delete();
-                    $videoPath = Helpers::fileUpload($video, 'images/poi-videos');
-                    POIMedia::create([
-                        'poi_id' => $id,
-                        'type' => 'video',
-                        'media_url' => $videoPath,
-                    ]);
-                }
+            if (isset($request->audio[$key])) {
+                POIMedia::where('detail_id', $detail->id)->where('type', 'audio')->delete();
+                $audioPath = Helpers::fileUpload($request->audio[$key], 'images/poi-audios');
+                POIMedia::create([
+                    'poi_id' => $id,
+                    'detail_id' => $detail->id,
+                    'type' => 'audio',
+                    'media_url' => $audioPath,
+                ]);
             }
 
-            foreach ($request->object as $object) {
-                if ($object) {
-                    POIMedia::where('poi_id', $id)->where('type', 'object')->delete();
-                    $objectPath = Helpers::fileUpload($object, 'images/poi-objects');
-                    POIMedia::create([
-                        'poi_id' => $id,
-                        'type' => 'object',
-                        'media_url' => $objectPath,
-                    ]);
-                }
+            if (isset($request->video[$key])) {
+                POIMedia::where('detail_id', $detail->id)->where('type', 'video')->delete();
+                $videoPath = Helpers::fileUpload($request->video[$key], 'images/poi-videos');
+                POIMedia::create([
+                    'poi_id' => $id,
+                    'detail_id' => $detail->id,
+                    'type' => 'video',
+                    'media_url' => $videoPath,
+                ]);
+            }
+
+            if (isset($request->object[$key])) {
+                POIMedia::where('detail_id', $detail->id)->where('type', 'object')->delete();
+                $objectPath = Helpers::fileUpload($request->object[$key], 'images/poi-objects');
+                POIMedia::create([
+                    'poi_id' => $id,
+                    'detail_id' => $detail->id,
+                    'type' => 'object',
+                    'media_url' => $objectPath,
+                ]);
             }
         }
         return back();
@@ -231,7 +244,7 @@ class ProjectController extends Controller
         }
     }
 
-    public function qrcode_download(Project $redirect,$short_code)
+    public function qrcode_download(Project $redirect, $short_code)
     {
         $url = URL::to('/') . '/poi/' . $short_code . '/viewpoint';
         $pngImage = QrCode::size(400)->format('svg')->generate($url);

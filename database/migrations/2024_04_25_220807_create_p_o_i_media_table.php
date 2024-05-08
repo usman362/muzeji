@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('p_o_i_media', function (Blueprint $table) {
             $table->id();
             $table->integer('poi_id');
-            $table->enum( 'type', ['image','video'] )->default('image');
+            $table->integer('detail_id');
+            $table->enum( 'type', ['image','video','audio','logo'] )->default('image');
             $table->string('media_url');
             $table->timestamps();
         });

@@ -8,197 +8,65 @@
         <div class="project-details">
             <div class="main-title">
                 <b>{{ $poi->detail->title ?? '' }}</b>
-                {{-- / <span>add header</span> --}}
             </div>
 
             <div class="flags-section">
-                <div class="tablinks active" id="defaultOpen" onclick="changeTab(event, 'uk')">
-                    <img src="{{ asset('images/uk.png') }}" alt="" />
-                </div>
-                <div class="tablinks" onclick="changeTab(event, 'germany')">
-                    <img src="{{ asset('images/germany.png') }}" alt="" />
-                </div>
-                <div class="tablinks" onclick="changeTab(event, 'france')">
-                    <img src="{{ asset('images/france.png') }}" alt="" />
-                </div>
-                <div>
-                    <button><i class="fa fa-plus"></i></button>
-                </div>
-            </div>
-            <div id="uk" class="tab-content">
-                <div class="title-1"><b>Title 1</b> / <span class="cursor-pointer">Edit Title</span></div>
-                {{-- <div class="title-2"><b>Title 2</b></div> --}}
-                <div class="paragraph" lang="en">
-                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
-                    erat, sed diam voluptua. At vero eos et accusam et justo duo dolores
-                    et ea rebum. Lorem ipsum dolor sit amet, consetetur sadipscing
-                    elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore
-                    magna aliquyam erat, sed diam voluptua. At vero eos et accusam et
-                    justo duo dolores et ea rebum. Lorem ipsum dolor sit amet,
-                    consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt
-                    ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero
-                    eos et accusam et justo duo dolores et ea rebum. Lorem ipsum dolor
-                    sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
-                    invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
-                    At vero eos et accusam et justo duo dolores et ea rebum. Lorem ipsum
-                    dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
-                    tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
-                    voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
-                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
-                    erat, sed diam voluptua. At vero eos et accusam et justo duo dolores
-                    et ea rebum. /
-                    <span class="cursor-pointer">Edit Text</span>
-                </div>
-                <div class="mp3-buttons">
-                    <div class="ai-checkbox">
-                        <input type="checkbox" name="ai-checkbox" id="ai-checkbox" />
-                        <label for="ai-checkbox">AI generate MP3</label>
+                @foreach ($poi->details as $key => $detail)
+                    @php
+                        $logoTab = App\Models\POIMedia::where('detail_id',$detail->id)->where('type','logo')->first();
+                    @endphp
+                    <div class="tablinks active" id="defaultOpen" onclick="changeTab(event, '{{ $detail->language }}')">
+                        @if (isset($logoTab->media_url))
+                            <img src="{{ asset('storage/' . $logoTab->media_url) }}" alt="" />
+                        @else
+                            <img src="{{ asset('images/error_log.png') }}" width="40" alt="" />
+                        @endif
                     </div>
-                    <div class="audio-input">
-                        <div class="input-box">Upload some MP3 sounds</div>
-                        <div class="input-icon">
-                            <img src="{{ asset('images/mic-icon.png') }}" alt="mic-icon" />
+                @endforeach
+            </div>
+
+            @foreach ($poi->details as $key => $detail)
+                <div id="{{ $detail->language }}" class="tab-content">
+                    <div class="title-1"><b>{{ $detail->title }}</b></div>
+                    <div class="paragraph" lang="{{ $detail->language }}">
+                        {{ $detail->description }}
+                    </div>
+                        @php
+                            $audio = App\Models\POIMedia::where('detail_id',$detail->id)->where('type','audio')->first();
+                            $video = App\Models\POIMedia::where('detail_id',$detail->id)->where('type','video')->first();
+                            $logo = App\Models\POIMedia::where('detail_id',$detail->id)->where('type','logo')->first();
+                            $object = App\Models\POIMedia::where('detail_id',$detail->id)->where('type','object')->first();
+                        @endphp
+                    <div class="mp3-buttons">
+                        @if (isset($audio->media_url))
+                            <audio src="{{ asset('storage/' . $audio->media_url) }}" autoplay controls></audio>
+                        @endif
+                    </div>
+                    <div class="input-large-box">
+                        @if (isset($logo->media_url))
+                            <img src="{{ asset('storage/' . $logo->media_url) }}" alt="" />
+                        @else
+                            <div class="input-box-icon">
+                                <img src="{{ asset('images/photo-icon.png') }}" alt="upload-icon" />
+                            </div>
+                        @endif
+                    </div>
+                    <div class="input-large-box">
+                        @if (isset($video->media_url))
+                            <video src="{{ asset('storage/' . $video->media_url) }}" autoplay controls></video>
+                        @else
+                            <div class="input-box-icon">
+                                <img src="{{ asset('images/upload-icon-large.png') }}" alt="upload-icon" />
+                            </div>
+                        @endif
+                    </div>
+                    <div class="input-large-box">
+                        <div class="input-box-icon">
+                            <img src="{{ asset('images/star-icon.png') }}" alt="star-icon" />
                         </div>
                     </div>
                 </div>
-                <div class="input-large-box">
-                    <div class="input-box-icon">
-                        <img src="{{ asset('images/photo-icon.png') }}" alt="upload-icon" />
-                    </div>
-                    <div>Upload photos</div>
-                </div>
-                <div class="input-large-box">
-                    <div class="input-box-icon">
-                        <img src="{{ asset('images/upload-icon-large.png') }}" alt="upload-icon" />
-                    </div>
-                    <div>Upload videos</div>
-                </div>
-                <div class="input-large-box">
-                    <div class="input-box-icon">
-                        <img src="{{ asset('images/star-icon.png') }}" alt="star-icon" />
-                    </div>
-                    <div>Upload 3D Object</div>
-                </div>
-            </div>
-            <div id="germany" class="tab-content">
-                <div class="title-1"><b>Title ger</b> / <span>add title 1</span></div>
-                <div class="title-2"><b>Title ger</b></div>
-                <div class="paragraph">
-                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
-                    erat, sed diam voluptua. At vero eos et accusam et justo duo dolores
-                    et ea rebum. Lorem ipsum dolor sit amet, consetetur sadipscing
-                    elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore
-                    magna aliquyam erat, sed diam voluptua. At vero eos et accusam et
-                    justo duo dolores et ea rebum. Lorem ipsum dolor sit amet,
-                    consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt
-                    ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero
-                    eos et accusam et justo duo dolores et ea rebum. Lorem ipsum dolor
-                    sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
-                    invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
-                    At vero eos et accusam et justo duo dolores et ea rebum. Lorem ipsum
-                    dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
-                    tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
-                    voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
-                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
-                    erat, sed diam voluptua. At vero eos et accusam et justo duo dolores
-                    et ea rebum. /
-                    <span>Add more text</span>
-                </div>
-                <div class="mp3-buttons">
-                    <div class="ai-checkbox">
-                        <input type="checkbox" name="ai-checkbox" id="ai-checkbox" />
-                        <label for="ai-checkbox">AI generate MP3</label>
-                    </div>
-                    <div class="audio-input">
-                        <div class="input-box">Upload some MP3 sounds</div>
-                        <div class="input-icon">
-                            <img src="{{ asset('images/mic-icon.png') }}" alt="mic-icon" />
-                        </div>
-                    </div>
-                </div>
-                <div class="input-large-box">
-                    <div class="input-box-icon">
-                        <img src="{{ asset('images/photo-icon.png') }}" alt="upload-icon" />
-                    </div>
-                    <div>Upload photos</div>
-                </div>
-                <div class="input-large-box">
-                    <div class="input-box-icon">
-                        <img src="{{ asset('images/upload-icon-large.png') }}" alt="upload-icon" />
-                    </div>
-                    <div>Upload videos</div>
-                </div>
-                <div class="input-large-box">
-                    <div class="input-box-icon">
-                        <img src="{{ asset('images/star-icon.png') }}" alt="star-icon" />
-                    </div>
-                    <div>Upload 3D Object</div>
-                </div>
-            </div>
-            <div id="france" class="tab-content">
-                <div class="title-1"><b>Title 1</b> / <span>add title 1</span></div>
-                <div class="title-2"><b>Title 2</b></div>
-                <div class="paragraph">
-                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
-                    erat, sed diam voluptua. At vero eos et accusam et justo duo dolores
-                    et ea rebum. Lorem ipsum dolor sit amet, consetetur sadipscing
-                    elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore
-                    magna aliquyam erat, sed diam voluptua. At vero eos et accusam et
-                    justo duo dolores et ea rebum. Lorem ipsum dolor sit amet,
-                    consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt
-                    ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero
-                    eos et accusam et justo duo dolores et ea rebum. Lorem ipsum dolor
-                    sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
-                    invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
-                    At vero eos et accusam et justo duo dolores et ea rebum. Lorem ipsum
-                    dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
-                    tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
-                    voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
-                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
-                    erat, sed diam voluptua. At vero eos et accusam et justo duo dolores
-                    et ea rebum. /
-                    <span>Add more text</span>
-                </div>
-                <div class="mp3-buttons">
-                    <div class="ai-checkbox">
-                        <input type="checkbox" name="ai-checkbox" id="ai-checkbox" />
-                        <label for="ai-checkbox">AI generate MP3</label>
-                    </div>
-                    <div class="audio-input">
-                        <div class="input-box">Upload some MP3 sounds</div>
-                        <div class="input-icon">
-                            <img src="{{ asset('images/mic-icon.png') }}" alt="mic-icon" />
-                        </div>
-                    </div>
-                </div>
-                <div class="input-large-box">
-                    <div class="input-box-icon">
-                        <img src="{{ asset('images/photo-icon.png') }}" alt="upload-icon" />
-                    </div>
-                    <div>Upload photos</div>
-                </div>
-                <div class="input-large-box">
-                    <div class="input-box-icon">
-                        <img src="{{ asset('images/upload-icon-large.png') }}" alt="upload-icon" />
-                    </div>
-                    <div>Upload videos</div>
-                </div>
-                <div class="input-large-box">
-                    <div class="input-box-icon">
-                        <img src="{{ asset('images/star-icon.png') }}" alt="star-icon" />
-                    </div>
-                    <div>Upload 3D Object</div>
-                </div>
-            </div>
-            <div class="submit-details">
-                <button>SAVE</button>
-            </div>
+            @endforeach
         </div>
     </div>
 @endsection

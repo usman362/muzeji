@@ -15,4 +15,10 @@ class POIDetail extends Model
         'description',
         'use_google_translate'
     ];
+
+
+    public function media()
+    {
+        return $this->belongsTo(POIMedia::class, 'id', 'detail_id');
+    }
 }
