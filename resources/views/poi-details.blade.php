@@ -2,7 +2,7 @@
 @section('content')
     <div class="main-container" style="margin-top: 0">
         <div class="back-button">
-            <button><i class="fa fa-chevron-left"></i></button>
+            <a href="{{ route('poi.index', $poi->exhibition->id) }}"><button><i class="fa fa-chevron-left"></i></button></a>
         </div>
 
         <div class="project-details">
@@ -13,7 +13,9 @@
             <div class="flags-section">
                 @foreach ($poi->details as $key => $detail)
                     @php
-                        $logoTab = App\Models\POIMedia::where('detail_id',$detail->id)->where('type','logo')->first();
+                        $logoTab = App\Models\POIMedia::where('detail_id', $detail->id)
+                            ->where('type', 'logo')
+                            ->first();
                     @endphp
                     <div class="tablinks active" id="defaultOpen" onclick="changeTab(event, '{{ $detail->language }}')">
                         @if (isset($logoTab->media_url))
@@ -31,15 +33,23 @@
                     <div class="paragraph" lang="{{ $detail->language }}">
                         {{ $detail->description }}
                     </div>
-                        @php
-                            $audio = App\Models\POIMedia::where('detail_id',$detail->id)->where('type','audio')->first();
-                            $video = App\Models\POIMedia::where('detail_id',$detail->id)->where('type','video')->first();
-                            $logo = App\Models\POIMedia::where('detail_id',$detail->id)->where('type','logo')->first();
-                            $object = App\Models\POIMedia::where('detail_id',$detail->id)->where('type','object')->first();
-                        @endphp
+                    @php
+                        $audio = App\Models\POIMedia::where('detail_id', $detail->id)
+                            ->where('type', 'audio')
+                            ->first();
+                        $video = App\Models\POIMedia::where('detail_id', $detail->id)
+                            ->where('type', 'video')
+                            ->first();
+                        $logo = App\Models\POIMedia::where('detail_id', $detail->id)
+                            ->where('type', 'logo')
+                            ->first();
+                        $object = App\Models\POIMedia::where('detail_id', $detail->id)
+                            ->where('type', 'object')
+                            ->first();
+                    @endphp
                     <div class="mp3-buttons">
                         @if (isset($audio->media_url))
-                            <audio src="{{ asset('storage/' . $audio->media_url) }}" autoplay controls></audio>
+                            <audio src="{{ asset('storage/' . $audio->media_url) }}" controls></audio>
                         @endif
                     </div>
                     <div class="input-large-box">
@@ -53,7 +63,7 @@
                     </div>
                     <div class="input-large-box">
                         @if (isset($video->media_url))
-                            <video src="{{ asset('storage/' . $video->media_url) }}" autoplay controls></video>
+                            <video src="{{ asset('storage/' . $video->media_url) }}" controls></video>
                         @else
                             <div class="input-box-icon">
                                 <img src="{{ asset('images/upload-icon-large.png') }}" alt="upload-icon" />

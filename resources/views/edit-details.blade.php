@@ -2,7 +2,7 @@
 @section('content')
     <div class="main-container" style="margin-top: 0">
         <div class="back-button">
-            <button><i class="fa fa-chevron-left"></i></button>
+            <a href="{{ route('poi.index', $poi->exhibition->id) }}"><button><i class="fa fa-chevron-left"></i></button></a>
         </div>
 
         <form action="{{ route('poi.update', $poi->id) }}" method="post" enctype="multipart/form-data">
