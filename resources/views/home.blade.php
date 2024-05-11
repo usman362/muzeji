@@ -2,22 +2,22 @@
 
 @section('content')
     @forelse ($projects as $key => $project)
-        <div class="main-banner main-banner-1" style="background-color:{{$project->bg_color}}">
+        <div class="main-banner main-banner-1" style="background-color:{{ $project->bg_color }}">
             <div class="banner-image">
-                <img src="{{ asset('storage/'.$project->logo) }}" alt="banner-1" />
+                <img src="{{ asset('storage/' . $project->logo) }}" alt="banner-1" />
             </div>
             <div class="banner-section">
-                <div class="text-box" style="background-color:{{$project->head_color}}">
+                <div class="text-box" style="background-color:{{ $project->head_color }}">
                     <div class="banner-number">
                         <p>{{ ++$key }}</p>
                     </div>
                     <div class="banner-text">
-                        {{$project->title}}
+                        {{ $project->title }}
                     </div>
                 </div>
                 <div class="heading-box">
-                    <div class="banner-heading">{{strtoupper($project->description)}}</div>
-                    <a href="{{route('projects.index',$project->id)}}" class="redirect-button">
+                    <div class="banner-heading">{{ strtoupper($project->description) }}</div>
+                    <a href="{{ route('projects.index', $project->id) }}" class="redirect-button">
                         <img src="{{ asset('images/arrow-right-long.png') }}" alt="right-arrow" />
                     </a>
                 </div>
@@ -37,7 +37,7 @@
         <div class="backdrop"></div>
         <div class="modal-box">
             <i class="fa fa-close close-button" onclick="toggleModal()"></i>
-            <form action="{{route('projects.store')}}" method="post" enctype="multipart/form-data" id="project-form">
+            <form action="{{ route('projects.store') }}" method="post" enctype="multipart/form-data" id="project-form">
                 @csrf
                 <div class="modal-inputs">
                     <div class="file-input cursor-pointer">
@@ -47,11 +47,16 @@
                             </div>
                             <div class="selected-file" id="selectedFile">Upload Logo</div>
                         </div>
-                        <input type="file" id="fileInput" name="file" onchange="showFileName()" required/>
+                        <input type="file" id="fileInput" name="file" onchange="showFileName()" required />
                         <div class=""></div>
                     </div>
                     <div class="text-input">
-                        <input type="email" name="title" placeholder="Email of User" required/>
+                        <input type="email" name="title" placeholder="Email of User" required />
+                        @error('title')
+                            <p style="color:red;">
+                                {{ $message }}
+                            </p>
+                        @enderror
                     </div>
                     <div class="colors-input">
                         <label>Choose colors</label>
@@ -85,7 +90,12 @@
                         </div>
                     </div>
                     <div class="text-input">
-                        <input type="text" placeholder="Company Name" name="description" required/>
+                        <input type="text" placeholder="Company Name" name="description" required />
+                        @error('description')
+                            <p style="color:red;">
+                                {{ $message }}
+                            </p>
+                        @enderror
                     </div>
                 </div>
                 <div class="modal-button">

@@ -37,7 +37,7 @@ class ProjectController extends Controller
     {
         $request->validate([
             'file' => 'required|file|image',
-            'title' => 'required',
+            'title' => 'required|unique:users,email',
             'description' => 'required',
         ]);
         $status = empty($request->id) ? 'Created' : 'Updated';
