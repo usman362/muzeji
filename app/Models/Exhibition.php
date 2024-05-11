@@ -20,4 +20,9 @@ class Exhibition extends Model
     {
         return $this->hasMany(POI::class, 'exhibition_id', 'id');
     }
+
+    public function project()
+    {
+        return $this->belongsTo(Project::class, 'project_id','id');
+    }
 }

@@ -47,20 +47,20 @@
                             </div>
                             <div class="selected-file" id="selectedFile">Upload Logo</div>
                         </div>
-                        <input type="file" id="fileInput" name="file" onchange="showFileName()" />
+                        <input type="file" id="fileInput" name="file" onchange="showFileName()" required/>
                         <div class=""></div>
                     </div>
                     <div class="text-input">
-                        <input type="text" name="title" placeholder="Project Title" />
+                        <input type="email" name="title" placeholder="Email of User" required/>
                     </div>
                     <div class="colors-input">
                         <label>Choose colors</label>
-                        <input type="color" id="backgroundColor" name="bg_color"
+                        <input type="color" id="backgroundColor" name="bg_color" value="#1AD598"
                             onchange="changeBoxColor('backgroundColor', 'backgroundColorBox')" />
                         <div class="colorBox" onclick="fileInputClick('backgroundColor')">
                             <div id="backgroundColorBox"
                                 style="
-                background-color: rgba(26, 213, 152, 1);
+                background-color: #1AD598;
                 width: 15px;
                 height: 15px;
                 flex-shrink: 0;
@@ -69,12 +69,12 @@
                             </div>
                             <div>background</div>
                         </div>
-                        <input type="color" id="headerColor" name="head_color"
+                        <input type="color" id="headerColor" name="head_color" value="#ea3a3d"
                             onchange="changeBoxColor('headerColor', 'headerColorBox')" />
                         <div class="colorBox" onclick="fileInputClick('headerColor')">
                             <div id="headerColorBox"
                                 style="
-                background-color: rgba(234, 58, 61, 1);
+                background-color: #ea3a3d;
                 width: 15px;
                 height: 15px;
                 flex-shrink: 0;
@@ -85,7 +85,7 @@
                         </div>
                     </div>
                     <div class="text-input">
-                        <input type="text" placeholder="Description" name="description" />
+                        <input type="text" placeholder="Company Name" name="description" required/>
                     </div>
                 </div>
                 <div class="modal-button">

@@ -114,38 +114,43 @@ class ProjectController extends Controller
     {
         $projects = Project::all();
         $poi = POI::with('exhibition:id,project_id')->find($id);
-        if(!empty($request->main_title)){
+        if (!empty($request->main_title)) {
             $poi->title = $request->main_title;
             $poi->save();
         }
         foreach ($request->main_id as $key => $mainId) {
-            $detail = POIDetail::updateOrCreate(['id' => $mainId],[
+            $detail = POIDetail::updateOrCreate(['id' => $mainId], [
                 'poi_id' => $id,
                 'title' => $request->title[$key],
                 'description' => $request->description[$key],
                 'language' => $request->language[$key],
+                'flag' => $request->flag[$key],
             ]);
 
-            if (isset($request->logo[$key])) {
+            if (!empty(request('logo' . $key))) {
                 POIMedia::where('detail_id', $detail->id)->where('type', 'logo')->delete();
-                $logoPath = Helpers::fileUpload($request->logo[$key], 'images/poi-logo');
-                POIMedia::create([
-                    'poi_id' => $id,
-                    'detail_id' => $detail->id,
-                    'type' => 'logo',
-                    'media_url' => $logoPath,
-                ]);
+                foreach (request('logo' . $key) as $key => $logo) {
+                    $logoPath = Helpers::fileUpload($logo, 'images/poi-logo');
+                    POIMedia::create([
+                        'poi_id' => $id,
+                        'detail_id' => $detail->id,
+                        'type' => 'logo',
+                        'media_url' => $logoPath,
+                    ]);
+                }
             }
 
-            if (isset($request->audio[$key])) {
+            if (!empty(request('audio' . $key))) {
                 POIMedia::where('detail_id', $detail->id)->where('type', 'audio')->delete();
-                $audioPath = Helpers::fileUpload($request->audio[$key], 'images/poi-audios');
-                POIMedia::create([
-                    'poi_id' => $id,
-                    'detail_id' => $detail->id,
-                    'type' => 'audio',
-                    'media_url' => $audioPath,
-                ]);
+                foreach (request('audio' . $key) as $key => $audio) {
+                    $audioPath = Helpers::fileUpload($audio, 'images/poi-audios');
+                    POIMedia::create([
+                        'poi_id' => $id,
+                        'detail_id' => $detail->id,
+                        'type' => 'audio',
+                        'media_url' => $audioPath,
+                    ]);
+                }
             }
 
             if (isset($request->video[$key])) {

@@ -1,0 +1,272 @@
+*{
+	font-family: 'poppins',sans-serif;
+	margin: 0;
+	padding: 0;
+}
+.fsc{
+	background-color: rgba(13, 29, 177, 0.8077);
+
+
+
+
+}
+section.fscreen{
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	color: #fff;
+}
+section.fscreen h1{
+	font-size: 40px;
+	font-weight: 500;
+}
+
+
+
+.mid-content p::-webkit-scrollbar {
+  width: 3px;
+}
+
+
+.mid-content p::-webkit-scrollbar-track {
+  background-color: #e4e4e4;
+  border-radius: 100px;
+}
+
+.mid-content p::-webkit-scrollbar-thumb {
+  background-color: #FF4401;
+  border-radius: 150px;
+}
+
+.mid-content p::-webkit-scrollbar-thumb:hover {
+  background-color: #d8d8d8;
+}
+
+.mid-content p::-webkit-scrollbar-thumb:active {
+  background-color: #d8d8d8;
+}
+
+
+
+
+section.fscreen .logo{
+	font-weight: 100;
+}
+.sscreen .sc-2-cont {
+	position: relative;
+	overflow-x: hidden;
+}
+
+.sscreen .mySlides {
+	display: none
+}
+
+.sscreen img {
+	vertical-align: middle;
+}
+
+.sscreen .slideshow-container {
+	position: relative;
+	height: 300px;
+}
+
+.sscreen .mid-content {
+	padding: 30px 35px 0 35px;
+	text-align: justify;
+}
+
+.sscreen .prev,
+.next {
+	cursor: pointer;
+	position: absolute;
+	top: 47%;
+	width: auto;
+	padding: 16px;
+	margin-top: -22px;
+	color: white;
+	font-weight: bold;
+	font-size: 18px;
+	transition: 0.6s ease;
+	border-radius: 0 3px 3px 0;
+	user-select: none;
+}
+
+.sscreen .next {
+	right: 0;
+	border-radius: 3px 0 0 3px;
+}
+
+
+.sscreen .box {
+	width: 100%;
+	height: 300px;
+	background: #D8D8D8;
+	border-bottom-right-radius: 20px;
+	border-bottom-left-radius: 10px;
+}
+.mid-content p {
+    overflow-x: hidden;
+    overflow-y: scroll;
+    height: 350px;
+    padding-right: 15px;
+}
+.sscreen .ico-cont {
+	display: flex;
+	margin: -35px 40px 0 40px;
+}
+
+.sscreen .ico-cont div {
+	background-color: #0D1AB1;
+	width: 65px;
+	height: 65px;
+	border-radius: 50%;
+	display: flex;
+	justify-content: center;
+	box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+}
+
+.sscreen .contic img {
+	width: 35px;
+}
+
+.sscreen .plic img {
+	width: 25px;
+	margin-left: 5px;
+}
+
+.sscreen .plic {
+	margin-left: auto;
+}
+
+.sscreen .mid-content p {
+	color: #77838F;
+}
+
+.sscreen .mid-content h3 {
+	margin: 20px 0 10px 0;
+	font-weight: 500;
+	color: #1E2022;
+}
+
+.sscreen .prev,
+.next,
+.text {
+	font-size: 11px
+}
+
+.sscreen .music {
+
+	padding: 20px;
+	box-shadow: 0 0 20px rgba(red, 0, 0, 0.4);
+	background-color: #F2F2F2;
+	color: #555;
+	border-radius: 8px;
+	margin: 0 30px;
+}
+
+.sscreen .music .track {
+	display: flex;
+	align-items: center;
+}
+
+.sscreen .music .track img {
+	width: 40px;
+	margin-right: 30px;
+	cursor: pointer;
+}
+
+.sscreen .music .track div {
+	flex: 1;
+}
+
+.sscreen .side-lang-cont {
+	width: 75px;
+	display: none;
+	background: #fff;
+	position: fixed;
+	height: 100%;
+	top: 0;
+	z-index: 1;
+}
+
+.sscreen .each-lang img {
+	width: 40px;
+}
+
+.sscreen .inner-g {
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	height: 90%;
+}
+
+.sscreen .inner-g .each-lang {
+	margin: 25px 0;
+}
+
+.sscreen .s-side {
+	display: block;
+}
+
+.sscreen button.arbtn {
+	padding: 13px 24px;
+	background: #fff;
+	box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+	border: none;
+	border-radius: 14px;
+	position: absolute;
+	right: 15px;
+	top: 15px;
+	font-weight: 600;
+}
+
+.sscreen .overlay {
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	z-index: 9998;
+}
+
+.sscreen .popup {
+	display: none;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 100%;
+	max-width: 600px;
+	height: 300px;
+	background-color: rgb(216 216 216);
+	border-radius: 5px;
+	padding: 20px;
+	box-sizing: border-box;
+	z-index: 9999;
+}
+
+.sscreen .popup-close {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	cursor: pointer;
+	color: #333;
+	font-size: 24px;
+}
+
+.sscreen .popup video {
+	width: 100%;
+}
+
+.sscreen .pcontst {
+	padding-top: 40px;
+}
+
+.cursor-pointer{
+    cursor: pointer;
+}
