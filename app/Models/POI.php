@@ -10,6 +10,7 @@ class POI extends Model
     use HasFactory;
 
     protected $fillable = [
+        'title',
         'exhibition_id',
         'short_code',
         'qr_hash'

@@ -20,13 +20,13 @@ Route::middleware(['auth'])->group(function () {
 
     Route::delete('poi/{id}',[App\Http\Controllers\ProjectController::class,'poiDestroy'])->name('poi.destroy');
 
-    Route::get('poi/{id}/viewpoint',[App\Http\Controllers\ProjectController::class,'poiShow'])->name('poi.show');
+    Route::get('poi/{id}/viewpoint/{qrcode?}',[App\Http\Controllers\ProjectController::class,'poiShow'])->name('poi.show');
 
     Route::get('poi/{id}/edit',[App\Http\Controllers\ProjectController::class,'poiEdit'])->name('poi.edit');
 
     Route::post('poi/{id}/update',[App\Http\Controllers\ProjectController::class,'poiUpdate'])->name('poi.update');
 
-    Route::get('poi/{short_code}/qr-code',[App\Http\Controllers\ProjectController::class,'qrcode_download'])->name('qrcode.download');
+    Route::get('poi/{short_code}/qr-code/{qrcode}',[App\Http\Controllers\ProjectController::class,'qrcode_download'])->name('qrcode.download');
 
     Route::post('exhibitions/{id}',[App\Http\Controllers\ProjectController::class,'exhibitionStore'])->name('exhibition.store');
 

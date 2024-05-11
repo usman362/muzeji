@@ -15,6 +15,8 @@ class Project extends Model
         'logo',
         'head_color',
         'bg_color',
+        'splash_color',
+        'splash',
         'user_id'
     ];
 

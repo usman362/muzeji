@@ -51,7 +51,7 @@
                     <div class="chart-heading">
                         <div>
                             <p>Access</p>
-                            <h1>99999</h1>
+                            <h1>{{$short_codes->count()+$qrcodes->count()}}</h1>
                             <small>From type</small>
                         </div>
                         <i class="fa fa-info-circle"></i>
@@ -65,13 +65,23 @@
         </div>
         <div class="statistics-project-table">
             @foreach ($histories as $history)
+            @php
+                $daysAgo = \Carbon\Carbon::parse($history->created_at)->diffInDays();
+                if ($daysAgo < 1) {
+                    $formattedCreatedAt = 'Today';
+                } elseif ($daysAgo == 1) {
+                    $formattedCreatedAt = 'Yesterday';
+                } else {
+                    $formattedCreatedAt = (int)$daysAgo . ' days ago';
+                }
+            @endphp
                 <div class="table-row">
                     <div class="place-title">
                         <input type="checkbox" />
                         <div class="title">
                             <div>{{ $history->description }}</div>
                             <div class="time-badge">
-                                <i class="fa fa-clock-o" aria-hidden="true"></i> 8 days ago
+                                <i class="fa fa-clock-o" aria-hidden="true"></i> {{$formattedCreatedAt}}
                             </div>
                         </div>
                     </div>
@@ -194,24 +204,12 @@
                 type: "pie",
                 radius: "50%",
                 data: [{
-                        value: 1048,
-                        name: "Search Engine"
+                        value: {{$short_codes->count()}},
+                        name: "Short Code"
                     },
                     {
-                        value: 735,
-                        name: "Direct"
-                    },
-                    {
-                        value: 580,
-                        name: "Email"
-                    },
-                    {
-                        value: 484,
-                        name: "Union Ads"
-                    },
-                    {
-                        value: 300,
-                        name: "Video Ads"
+                        value: {{$qrcodes->count()}},
+                        name: "QR Code"
                     },
                 ],
                 emphasis: {

@@ -14,7 +14,8 @@ class POIVisit extends Model
         'project_id',
         'device',
         'device_type',
-        'visit_time'
+        'visit_time',
+        'link_type'
     ];
 
     public function poi()

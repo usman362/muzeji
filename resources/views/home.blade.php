@@ -12,11 +12,11 @@
                         <p>{{ ++$key }}</p>
                     </div>
                     <div class="banner-text">
-                        {{$project->description}}
+                        {{$project->title}}
                     </div>
                 </div>
                 <div class="heading-box">
-                    <div class="banner-heading">{{strtoupper($project->title)}}</div>
+                    <div class="banner-heading">{{strtoupper($project->description)}}</div>
                     <a href="{{route('projects.index',$project->id)}}" class="redirect-button">
                         <img src="{{ asset('images/arrow-right-long.png') }}" alt="right-arrow" />
                     </a>

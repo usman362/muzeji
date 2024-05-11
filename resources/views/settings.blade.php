@@ -23,8 +23,11 @@
             </div>
 
             @if (!empty(request('project')) && !empty(\App\Models\Project::find(request()->project)))
-            {{-- <form action="{{route('settings.store',request()->project)}}" method="post" enctype="multipart/form-data">
-                @csrf --}}
+            <form action="{{route('settings.store',request()->project)}}" method="post" enctype="multipart/form-data">
+                @csrf
+                @php
+                    $project = \App\Models\Project::find(request()->project);
+                @endphp
                 <div class="input-sections">
                     <div class="colors-radio-box radio-box">
                         <input type="radio" name="colors-radio" id="colors-radio" />
@@ -32,32 +35,36 @@
                     </div>
                     <div class="colors-input-boxes">
                         {{-- Color Box Child --}}
-                        <div style="display: flex">
+
+                        <div>
+                            <sub>Background Color</sub>
                             <div class="colors-input-box cursor-pointer " onclick="inputClick('color-input-5')">
                                 <input type="color" id="color-input-5" name="bg_color"
                                     onchange="changeBoxColor('color-input-5', 'color-box-5', 'color-code-5')" />
-                                <div id="color-box-5" class="color-box" style="background: #0090ff"></div>
-                                <div id="color-code-5" class="color-code">#0090FF</div>
+                                <div id="color-box-5" class="color-box" style="background: {{$project->bg_color ?? '#0090ff'}}"></div>
+                                <div id="color-code-5" class="color-code">{{$project->bg_color ?? '#0090ff'}}</div>
                             </div>
                             {{-- <i class="fa fa-close mt-2 cursor-pointer" onclick="removeColorBox(this)"></i> --}}
                         </div>
 
-                        <div style="display: flex">
+                        <div>
+                            <sub>Header Color</sub>
                             <div class="colors-input-box cursor-pointer " onclick="inputClick('color-input-5')">
                                 <input type="color" id="color-input-5" name="head_color"
                                     onchange="changeBoxColor('color-input-5', 'color-box-5', 'color-code-5')" />
-                                <div id="color-box-5" class="color-box" style="background: #0090ff"></div>
-                                <div id="color-code-5" class="color-code">#0090FF</div>
+                                <div id="color-box-5" class="color-box" style="background: {{$project->head_color ?? '#0090ff'}}"></div>
+                                <div id="color-code-5" class="color-code">{{$project->head_color ?? '#0090ff'}}</div>
                             </div>
                             {{-- <i class="fa fa-close mt-2 cursor-pointer" onclick="removeColorBox(this)"></i> --}}
                         </div>
 
-                        <div style="display: flex">
+                        <div>
+                            <sub>Splash Color</sub>
                             <div class="colors-input-box cursor-pointer " onclick="inputClick('color-input-5')">
                                 <input type="color" id="color-input-5" name="splash_color"
                                     onchange="changeBoxColor('color-input-5', 'color-box-5', 'color-code-5')" />
-                                <div id="color-box-5" class="color-box" style="background: #0090ff"></div>
-                                <div id="color-code-5" class="color-code">#0090FF</div>
+                                <div id="color-box-5" class="color-box" style="background: {{$project->splash_color ?? '#0090ff'}}"></div>
+                                <div id="color-code-5" class="color-code">{{$project->splash_color ?? '#0090ff'}}</div>
                             </div>
                             {{-- <i class="fa fa-close mt-2 cursor-pointer" onclick="removeColorBox(this)"></i> --}}
                         </div>
@@ -84,6 +91,7 @@
                             <div id="selected-file-1">Upload some files</div>
                         </div>
                     </div>
+                    <img src="{{asset('storage/'.$project->logo)}}" alt="" width="100">
                 </div>
                 <div class="input-sections">
                     <div class="design-radio-box radio-box">
@@ -92,18 +100,19 @@
                     </div>
                     <div class="input-boxes">
                         <div class="input-box cursor-pointer" onclick="inputClick('file-input-2')">
-                            <input onchange="showFileName('file-input-2','selected-file-2')" type="file" name="splash_file" id="file-input-2" />
+                            <input onchange="showFileName('file-input-2','selected-file-2')" type="file" name="splash" id="file-input-2" />
                             <div class="upload-icon">
                                 <img src="images/upload-icon.png" alt="upload-icon" />
                             </div>
                             <div id="selected-file-2">Splash screen</div>
                         </div>
                     </div>
+                    {{-- <img src="{{asset('storage/'.$project->logo)}}" alt="" width="100"> --}}
                 </div>
-                {{-- <div class="submit-details">
+                <div class="submit-details">
                     <button type="submit">SAVE</button>
-                </div> --}}
-            {{-- </form> --}}
+                </div>
+            </form>
             @endif
         </div>
     </div>

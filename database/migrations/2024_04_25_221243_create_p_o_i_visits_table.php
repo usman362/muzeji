@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('device')->nullable();
             $table->string('visit_time');
             $table->string('device_type')->nullable();
+            $table->string('link_type')->nullable()->default('short_code');
             $table->timestamps();
         });
     }

@@ -26,7 +26,14 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $projects = Project::all();
+        if(auth()->user()->is_admin != true){
+            return redirect(route('projects.index',auth()->user()->project->id));
+        }
+        if(auth()->user()->is_admin == true){
+            $projects = Project::all();
+        }else{
+            $projects = Project::where('user_id',auth()->user()->id)->get();
+        }
         return view('home', compact('projects'));
     }
 }

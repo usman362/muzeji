@@ -19,7 +19,7 @@
                         </div>
                     </div>
                     <div class="action-buttons">
-                        <a href="{{ route('qrcode.download', $pois->short_code) }}">
+                        <a href="{{ route('qrcode.download', [$pois->short_code,$pois->qr_hash]) }}">
                             <img src="{{ asset('images/download-icon.png') }}" alt="download-button" />
                         </a>
                         <a href="{{ route('poi.show', $pois->short_code) }}">

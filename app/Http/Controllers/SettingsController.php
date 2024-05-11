@@ -16,84 +16,58 @@ class SettingsController extends Controller
 {
     public function index()
     {
-        $projects = Project::all();
+        if(auth()->user()->is_admin == true){
+            $projects = Project::all();
+        }else{
+            $projects = Project::where('user_id',auth()->user()->id)->get();
+        }
         return view('settings', compact('projects'));
     }
 
 
     public function store(Request $request,$id = null)
     {
-        $exhibitionIds = Exhibition::where('project_id',$id)->pluck('id');
-        $poi = POI::with('exhibition:id,project_id')->whereIn('exhibition_id',$exhibitionIds)->get();
-        foreach ($request->main_id as $key => $mainId) {
-            $detail = POIDetail::updateOrCreate(['id' => $mainId], [
-                'poi_id' => $id,
-                'title' => $request->title[$key],
-                'description' => $request->description[$key],
-                'language' => $request->language[$key],
-                'flag' => $request->flag[$key],
-            ]);
+        $request->validate([
+            'file' => 'required|file|image',
+            'title' => 'required',
+            'description' => 'required',
+        ]);
+        $status = empty($id) ? 'Created' : 'Updated';
+        $logoPath = Helpers::fileUpload($request->file, 'images/project-logo');
+        $splashPath = Helpers::fileUpload($request->file, 'images/project-splash');
 
-            if (!empty(request('logo' . $key))) {
-                POIMedia::where('detail_id', $detail->id)->where('type', 'logo')->delete();
-                foreach (request('logo' . $key) as $key => $logo) {
-                    $logoPath = Helpers::fileUpload($logo, 'images/poi-logo');
-                    POIMedia::create([
-                        'poi_id' => $id,
-                        'detail_id' => $detail->id,
-                        'type' => 'logo',
-                        'media_url' => $logoPath,
-                    ]);
-                }
-            }
-
-            if (!empty(request('audio' . $key))) {
-                POIMedia::where('detail_id', $detail->id)->where('type', 'audio')->delete();
-                foreach (request('audio' . $key) as $key => $audio) {
-                    $audioPath = Helpers::fileUpload($audio, 'images/poi-audios');
-                    POIMedia::create([
-                        'poi_id' => $id,
-                        'detail_id' => $detail->id,
-                        'type' => 'audio',
-                        'media_url' => $audioPath,
-                    ]);
-                }
-            }
-
-            if (isset($request->video[$key])) {
-                POIMedia::where('detail_id', $detail->id)->where('type', 'video')->delete();
-                $videoPath = Helpers::fileUpload($request->video[$key], 'images/poi-videos');
-                POIMedia::create([
-                    'poi_id' => $id,
-                    'detail_id' => $detail->id,
-                    'type' => 'video',
-                    'media_url' => $videoPath,
-                ]);
-            }
-
-            if (isset($request->object[$key])) {
-                POIMedia::where('detail_id', $detail->id)->where('type', 'object')->delete();
-                $objectPath = Helpers::fileUpload($request->object[$key], 'images/poi-objects');
-                POIMedia::create([
-                    'poi_id' => $id,
-                    'detail_id' => $detail->id,
-                    'type' => 'object',
-                    'media_url' => $objectPath,
-                ]);
-            }
-        }
+        $project = Project::updateOrCreate(
+            ['id' => $id],
+            [
+                'logo' => $logoPath,
+                'splash' => $splashPath,
+                'title' => $request->title,
+                'description' => $request->description,
+                'head_color' => $request->head_color,
+                'bg_color' => $request->bg_color,
+                'splash_color' => $request->splash_color,
+                'user_id' => auth()->user()->id
+            ]
+        );
+        session()->flash('success', 'Project has been ' . $status . ' Successfully!');
         return back();
     }
 
     public function statistics(Request $request)
     {
-        $projects = Project::all();
+        if(auth()->user()->is_admin == true){
+            $projects = Project::all();
+        }else{
+            $projects = Project::where('user_id',auth()->user()->id)->get();
+        }
         if (!empty($request->project)) {
             $visits = POIVisit::with('poi')->where('project_id', $request->project)->get()->groupBy('device');
             $computerVisits = POIVisit::where('project_id', $request->project)->where('device_type', 'Computer')->get()->groupBy('device')->count();
             $phoneVisits = POIVisit::where('project_id', $request->project)->where('device_type', 'Phone')->get()->groupBy('device')->count();
             $tabletVisits = POIVisit::where('project_id', $request->project)->where('device_type', 'Tablet')->get()->groupBy('device')->count();
             $totalDevices = POIVisit::where('project_id', $request->project)->get()->groupBy('device_type')->count();
+            $short_codes = POIVisit::where('project_id', $request->project)->where('link_type','short_code')->get();
+            $qrcodes = POIVisit::where('project_id', $request->project)->where('link_type','qrcode')->get();
             $histories = ProjectHistory::where('project_id', $request->project)->get();
         } elseif (!empty($request->exhibition)) {
             $projectId = Exhibition::find($request->exhibition);
@@ -122,6 +96,6 @@ class SettingsController extends Controller
             $totalDevices = POIVisit::get()->groupBy('device_type')->count();
             $histories = ProjectHistory::all();
         }
-        return view('statistics', compact('projects', 'computerVisits', 'phoneVisits', 'tabletVisits', 'visits', 'totalDevices', 'histories'));
+        return view('statistics', compact('projects', 'computerVisits', 'phoneVisits', 'tabletVisits', 'visits', 'totalDevices', 'histories','short_codes','qrcodes'));
     }
 }

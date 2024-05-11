@@ -19,6 +19,8 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('bg_color')->nullable();
             $table->string('head_color')->nullable();
+            $table->string('splash_color')->nullable();
+            $table->string('splash')->nullable();
             $table->timestamps();
         });
     }
