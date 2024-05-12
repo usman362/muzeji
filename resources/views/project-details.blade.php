@@ -58,7 +58,7 @@
                     <input type="hidden" name="poi_id" />
                     <div class="text-input">
                         <div class="input-label">ADD NEW PLACE</div>
-                        <input type="text" placeholder="" name="title" />
+                        <input type="text" placeholder="" name="title" required/>
                         <button class="submit-button" type="submit">ADD</button>
                     </div>
                 </form>

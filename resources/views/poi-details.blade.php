@@ -57,7 +57,8 @@
                     <div class="slideshow-container">
                         <button class="arbtn"><img src="{{ asset('splash/img/AR.svg') }}"> view in AR</button>
                         @if (!empty($detail->images))
-                            @foreach ($detail->images as $key => $image)
+                            @foreach ($detail->images as $detailKey => $image)
+                            {{-- {{dd($detail->images->count())}} --}}
                                 <div class="mySlides mySlides{{ $detail->id }} fade">
                                     <div class="box"
                                         style="background: url({{ asset('storage/' . $image->media_url) }});background-size:cover"></div>

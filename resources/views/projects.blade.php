@@ -32,7 +32,7 @@
                     @csrf
                     <div class="text-input">
                         <div class="input-label">ADD NEW PLACE</div>
-                        <input type="text" name="title" placeholder="Enter Place Nmae" />
+                        <input type="text" name="title" placeholder="Enter Place Nmae" required/>
                         <button type="submit" class="submit-button">ADD</button>
                     </div>
                 </form>

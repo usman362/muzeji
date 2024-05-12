@@ -14,15 +14,12 @@
                 </div>
 
                 <div class="flags-section">
-                    {{-- <div class="flags-buttons"> --}}
                     @foreach ($poi->details as $key => $detail)
                         <div class="tablinks active" id="defaultOpen" onclick="changeTab(event, '{{ $detail->language }}')">
                             <img src="https://hatscripts.github.io/circle-flags/flags/{{ $detail->flag }}.svg"
                                 alt="" width="36" />
                         </div>
                     @endforeach
-                    {{-- </div> --}}
-
                     <div>
                         <button type="button" class="add-lang-btn"><i class="fa fa-plus"></i></button>
                     </div>
@@ -686,7 +683,7 @@
                                 <div class="input-box-icon">
                                     <img src="{{ asset('images/photo-icon.png') }}" alt="file-icon" />
                                 </div>
-                                <div class="selected-file" id="selectedLogo{{ $detail->id }}">Upload Logo</div>
+                                <div class="selected-file" id="selectedLogo{{ $detail->id }}">Upload Photos</div>
                                 <input type="file" id="imageInput{{ $detail->id }}" class="d-none"
                                     name="logo{{ $key }}[]"
                                     onchange="showFileName('selectedLogo{{ $detail->id }}','imageInput{{ $detail->id }}')"

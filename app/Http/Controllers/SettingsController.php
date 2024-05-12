@@ -16,37 +16,37 @@ class SettingsController extends Controller
 {
     public function index()
     {
-        if(auth()->user()->is_admin == true){
+        if (auth()->user()->is_admin == true) {
             $projects = Project::all();
-        }else{
-            $projects = Project::where('user_id',auth()->user()->id)->get();
+        } else {
+            $projects = Project::where('user_id', auth()->user()->id)->get();
         }
         return view('settings', compact('projects'));
     }
 
 
-    public function store(Request $request,$id = null)
+    public function store(Request $request, $id = null)
     {
         $request->validate([
-            'file' => 'required|file|image',
-            'title' => 'required',
-            'description' => 'required',
+            'file' => 'nullable|file|image',
+            'splash' => 'nullable|file|image',
         ]);
         $status = empty($id) ? 'Created' : 'Updated';
-        $logoPath = Helpers::fileUpload($request->file, 'images/project-logo');
-        $splashPath = Helpers::fileUpload($request->file, 'images/project-splash');
-
-        $project = Project::updateOrCreate(
+        if (!empty($request->file)) {
+            $logoPath = Helpers::fileUpload($request->file, 'images/project-logo');
+        }
+        if (!empty($request->splash)) {
+            $splashPath = Helpers::fileUpload($request->file, 'images/project-splash');
+        }
+        $project = Project::find($id);
+        $project->updateOrCreate(
             ['id' => $id],
             [
-                'logo' => $logoPath,
-                'splash' => $splashPath,
-                'title' => $request->title,
-                'description' => $request->description,
+                'logo' => $logoPath ?? $project->logo,
+                'splash' => $splashPath ?? $project->splash,
                 'head_color' => $request->head_color,
                 'bg_color' => $request->bg_color,
                 'splash_color' => $request->splash_color,
-                'user_id' => auth()->user()->id
             ]
         );
         session()->flash('success', 'Project has been ' . $status . ' Successfully!');
@@ -55,10 +55,10 @@ class SettingsController extends Controller
 
     public function statistics(Request $request)
     {
-        if(auth()->user()->is_admin == true){
+        if (auth()->user()->is_admin == true) {
             $projects = Project::all();
-        }else{
-            $projects = Project::where('user_id',auth()->user()->id)->get();
+        } else {
+            $projects = Project::where('user_id', auth()->user()->id)->get();
         }
         if (!empty($request->project)) {
             $visits = POIVisit::with('poi')->where('project_id', $request->project)->get()->groupBy('device');
@@ -66,8 +66,8 @@ class SettingsController extends Controller
             $phoneVisits = POIVisit::where('project_id', $request->project)->where('device_type', 'Phone')->get()->groupBy('device')->count();
             $tabletVisits = POIVisit::where('project_id', $request->project)->where('device_type', 'Tablet')->get()->groupBy('device')->count();
             $totalDevices = POIVisit::where('project_id', $request->project)->get()->groupBy('device_type')->count();
-            $short_codes = POIVisit::where('project_id', $request->project)->where('link_type','short_code')->get();
-            $qrcodes = POIVisit::where('project_id', $request->project)->where('link_type','qrcode')->get();
+            $short_codes = POIVisit::where('project_id', $request->project)->where('link_type', 'short_code')->get();
+            $qrcodes = POIVisit::where('project_id', $request->project)->where('link_type', 'qrcode')->get();
             $histories = ProjectHistory::where('project_id', $request->project)->get();
         } elseif (!empty($request->exhibition)) {
             $projectId = Exhibition::find($request->exhibition);
@@ -87,6 +87,12 @@ class SettingsController extends Controller
             $totalDevices = POIVisit::whereHas('poi', function ($q) use ($request) {
                 $q->where('exhibition_id', $request->exhibition);
             })->get()->groupBy('device_type')->count();
+            $short_codes = POIVisit::whereHas('poi', function ($q) use ($request) {
+                $q->where('exhibition_id', $request->exhibition);
+            })->where('link_type', 'short_code')->get();
+            $qrcodes = POIVisit::whereHas('poi', function ($q) use ($request) {
+                $q->where('exhibition_id', $request->exhibition);
+            })->where('link_type', 'qrcode')->get();
             $histories = ProjectHistory::where('project_id', $projectId->project_id)->get();
         } else {
             $visits = POIVisit::with('poi')->get()->groupBy('device');
@@ -94,8 +100,10 @@ class SettingsController extends Controller
             $phoneVisits = POIVisit::where('device_type', 'Phone')->get()->groupBy('device')->count();
             $tabletVisits = POIVisit::where('device_type', 'Tablet')->get()->groupBy('device')->count();
             $totalDevices = POIVisit::get()->groupBy('device_type')->count();
+            $short_codes = POIVisit::where('link_type', 'short_code')->get();
+            $qrcodes = POIVisit::where('link_type', 'qrcode')->get();
             $histories = ProjectHistory::all();
         }
-        return view('statistics', compact('projects', 'computerVisits', 'phoneVisits', 'tabletVisits', 'visits', 'totalDevices', 'histories','short_codes','qrcodes'));
+        return view('statistics', compact('projects', 'computerVisits', 'phoneVisits', 'tabletVisits', 'visits', 'totalDevices', 'histories', 'short_codes', 'qrcodes'));
     }
 }

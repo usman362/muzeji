@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 
 Auth::routes();
 
+Route::get('poi/{id}/viewpoint/{qrcode?}',[App\Http\Controllers\ProjectController::class,'poiShow'])->name('poi.show');
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/', [App\Http\Controllers\HomeController::class, 'index']);
 
@@ -19,8 +21,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('poi/{id}',[App\Http\Controllers\ProjectController::class,'poiStore'])->name('poi.store');
 
     Route::delete('poi/{id}',[App\Http\Controllers\ProjectController::class,'poiDestroy'])->name('poi.destroy');
-
-    Route::get('poi/{id}/viewpoint/{qrcode?}',[App\Http\Controllers\ProjectController::class,'poiShow'])->name('poi.show');
 
     Route::get('poi/{id}/edit',[App\Http\Controllers\ProjectController::class,'poiEdit'])->name('poi.edit');
 

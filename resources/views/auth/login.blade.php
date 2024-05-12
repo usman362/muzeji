@@ -24,12 +24,12 @@
                     </span>
                 @enderror
                 <input type="submit" value="Login" />
+                <div class="text-center remember-me-checkbox">
+                    <input type="checkbox" value="rememberMe" name="remember" id="remember"
+                        {{ old('remember') ? 'checked' : '' }} />
+                    <label for="rememberMe" class="mb-3">Remember Me</label>
+                </div>
             </form>
-            <div class="text-center remember-me-checkbox">
-                <input type="checkbox" value="rememberMe" name="remember" id="remember"
-                    {{ old('remember') ? 'checked' : '' }} />
-                <label for="rememberMe">Remember Me</label>
-            </div>
             @if (Route::has('password.request'))
                 <div class="text-center">
                     <a href="{{ route('password.request') }}">Forgot pass?</a>
