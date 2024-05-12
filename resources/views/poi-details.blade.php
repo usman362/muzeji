@@ -24,18 +24,23 @@
 <body class="fsc">
     <section class="fscreen">
         <h1>SPLASH SCREEN</h1>
-        <div class="logo"><i><img src="{{asset('storage/'.$poi->exhibition->project->logo)}}" width="100"><i></div>
+        <div class="logo"><i><img src="{{ asset('storage/' . $poi->exhibition->project->logo) }}" width="100"><i>
+        </div>
     </section>
     <section class="sscreen" style="display:none;">
 
         <div class="sc-2-cont">
             <div class="overlay" id="overlay" onclick="closePopup()"></div>
             @foreach ($poi->details as $key => $detail)
-                <div class="popup" id="popup{{$detail->id}}">
+                <div class="popup" id="popup{{ $key }}">
                     <span class="popup-close" onclick="closePopup()">&times;</span>
                     <div class="pcontst">
-                        @if(isset($detail->video->media_url))
-                        <video src="{{  asset('storage/' . $detail->video->media_url) }}" controls=""></video>
+                        @if (isset($detail->video->media_url))
+                            <video src="{{ asset('storage/' . $detail->video->media_url) }}" controls=""></video>
+                        @else
+                            <center>
+                                <h2>Video Not Found!</h2>
+                            </center>
                         @endif
                     </div>
                 </div>
@@ -43,7 +48,7 @@
             <div class="side-lang-cont">
                 <div class="inner-g">
                     @foreach ($poi->details as $key => $detail)
-                        <div class="each-lang cursor-pointer" onclick="showLanguage('{{ $detail->id }}')">
+                        <div class="each-lang cursor-pointer" onclick="showLanguage('{{ $key }}')">
                             <img src="https://hatscripts.github.io/circle-flags/flags/{{ $detail->flag }}.svg">
                         </div>
                     @endforeach
@@ -51,28 +56,27 @@
             </div>
 
             @foreach ($poi->details as $key => $detail)
-                {{-- @if ($key == 0) --}}
-                <div id="content-{{ $detail->id }}" class="language-content"
+                <div id="content-{{ $key }}" class="language-content"
                     {{ $key > 0 ? 'style=display:none;' : '' }}>
                     <div class="slideshow-container">
                         <button class="arbtn"><img src="{{ asset('splash/img/AR.svg') }}"> view in AR</button>
                         @if (!empty($detail->images))
                             @foreach ($detail->images as $detailKey => $image)
-                            {{-- {{dd($detail->images->count())}} --}}
-                                <div class="mySlides mySlides{{ $detail->id }} fade">
+                                <div class="mySlides mySlides{{ $key }} fade">
                                     <div class="box"
-                                        style="background: url({{ asset('storage/' . $image->media_url) }});background-size:cover"></div>
+                                        style="background: url({{ asset('storage/' . $image->media_url) }});background-size:cover">
+                                    </div>
                                 </div>
                             @endforeach
                         @endif
-                        <a class="prev" onclick="plusSlides(-1,{{ $detail->id }})">❮</a>
-                        <a class="next" onclick="plusSlides(1,{{ $detail->id }})">❯</a>
+                        <a class="prev" onclick="plusSlides(-1,{{ $key }})">❮</a>
+                        <a class="next" onclick="plusSlides(1,{{ $key }})">❯</a>
                         <div class="ico-cont">
                             <div class="contic cursor-pointer" onclick="addClassToSideLangCont()">
                                 <img src="https://hatscripts.github.io/circle-flags/flags/{{ $detail->flag }}.svg"
                                     width="30px">
                             </div>
-                            <div class="plic cursor-pointer" onclick="openPopup({{$detail->id}});">
+                            <div class="plic cursor-pointer" onclick="openPopup({{ $key }});">
                                 <img src="{{ asset('splash/img/playicon.svg') }}">
                             </div>
                         </div>
@@ -84,21 +88,20 @@
                         </p>
                     </div>
                     <br>
-                    @if(isset($detail->audio->media_url))
-                    <div class="music">
-                        <div class="track">
-                            <img src="{{ asset('splash/img/play.png') }}" id="playBtn{{ $detail->id }}">
-                            <div id="waveform{{ $detail->id }}"></div>
+                    @if (isset($detail->audio->media_url))
+                        <div class="music">
+                            <div class="track">
+                                <img src="{{ asset('splash/img/play.png') }}" id="playBtn{{ $key }}">
+                                <div id="waveform{{ $key }}"></div>
+                            </div>
                         </div>
-                    </div>
                     @endif
                 </div>
-                {{-- @endif --}}
                 <script type="text/javascript">
-                    var playBtn = document.getElementById('playBtn{{ $detail->id }}');
+                    var playBtn = document.getElementById('playBtn{{ $key }}');
 
                     var wavesurfer = WaveSurfer.create({
-                        container: '#waveform{{ $detail->id }}',
+                        container: '#waveform{{ $key }}',
                         waveColor: '#ddd',
                         progressColor: '#ff006c',
                         barWidth: 1.3,
@@ -107,8 +110,8 @@
                         barRadius: 3,
                         fftSize: 16384
                     });
-                    @if(isset($detail->audio->media_url))
-                    wavesurfer.load("{{  asset('storage/' . $detail->audio->media_url) }}");
+                    @if (isset($detail->audio->media_url))
+                        wavesurfer.load("{{ asset('storage/' . $detail->audio->media_url) }}");
                     @endif
                     playBtn.onclick = function() {
                         wavesurfer.playPause();
