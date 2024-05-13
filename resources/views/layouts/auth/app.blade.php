@@ -19,9 +19,20 @@
     rel="stylesheet"
     />
     <link href="{{asset('css/auth.css')}}" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
   </head>
   <body>
         @yield('content')
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+        <script>
+            @if (session()->has('success'))
+                toastr.success("{{ session('success') }}");
+            @endif
+            @if (session()->has('error'))
+                toastr.error("{{ session('error') }}");
+            @endif
+        </script>
   </body>
 </html>

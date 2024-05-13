@@ -122,17 +122,20 @@ class ProjectController extends Controller
 
     public function poiShow(Request $request, $id, $qrcode = null)
     {
-        // if($qrcode == null){
-        //     return redirect(route('login'));
-        // }
-        $poi = POI::query()->with(['exhibition:id,project_id','details'=>function($q){
-            $q->with(['images','audio','video']);
-        }])->where('short_code', $id);
-
-        if(!empty($qrcode)){
+        if (auth()->user()->is_admin == true) {
+            $poi = POI::query()->with(['exhibition:id,project_id', 'details' => function ($q) {
+                $q->with(['images', 'audio', 'video']);
+            }])->where('short_code', $id);
+        } else {
+            $poi = POI::query()->with(['details' => function ($q) {
+                $q->with(['images', 'audio', 'video']);
+            }])->whereHas('exhibition', function ($q) {
+                $q->where('user_id', auth()->user()->id);
+            })->where('short_code', $id);
+        }
+        if (!empty($qrcode)) {
             $poi->where('qr_hash', $qrcode);
         }
-
         $poi = $poi->first();
         $agent = new Agent();
         $deviceType = $this->getDeviceType($agent);
@@ -146,9 +149,6 @@ class ProjectController extends Controller
                 'visit_time' => now(),
             ]);
         }
-        if(empty($poi)){
-            return view('404');
-        }
         return view('poi-details', compact('poi'));
     }
 
@@ -159,12 +159,11 @@ class ProjectController extends Controller
             $poi = POI::with('exhibition:id,project_id')->find($id);
         } else {
             $projects = Project::where('user_id', auth()->user()->id)->get();
-            $poi = POI::whereHas('exhibition', function($q) {
-                $q->where('user_id',auth()->user()->id);
+            $poi = POI::whereHas('exhibition', function ($q) {
+                $q->where('user_id', auth()->user()->id);
             })->find($id);
-
         }
-        if(empty($poi)){
+        if (empty($poi)) {
             return view('404');
         }
         return view('edit-details', compact('projects', 'poi'));
@@ -343,5 +342,31 @@ class ProjectController extends Controller
         } else {
             return response()->json(['error' => 'Failed to generate QR code'], 500);
         }
+    }
+
+    public function short_code()
+    {
+        return view('short_code');
+    }
+
+    public function short_code_view(Request $request)
+    {
+        if (auth()->user()->is_admin == true) {
+            $poi = POI::query()->with(['exhibition:id,project_id', 'details' => function ($q) {
+                $q->with(['images', 'audio', 'video']);
+            }])->where('short_code', $request->short_code);
+        } else {
+            $poi = POI::query()->with(['details' => function ($q) {
+                $q->with(['images', 'audio', 'video']);
+            }])->whereHas('exhibition', function ($q) {
+                $q->where('user_id', auth()->user()->id);
+            })->where('short_code', $request->short_code);
+        }
+        $poi = $poi->first();
+        if (empty($poi)) {
+            session()->flash('error', 'POI Not Found from this Short Code!');
+            return back();
+        }
+        return redirect(route('poi.show', $request->short_code));
     }
 }

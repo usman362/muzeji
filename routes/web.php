@@ -31,7 +31,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('exhibitions/{id}',[App\Http\Controllers\ProjectController::class,'exhibitionStore'])->name('exhibition.store');
 
     Route::get('settings',[App\Http\Controllers\SettingsController::class,'index'])->name('settings.index');
+
     Route::post('settings/{id?}',[App\Http\Controllers\SettingsController::class,'store'])->name('settings.store');
 
+    Route::get('poi-short-code',[App\Http\Controllers\ProjectController::class,'short_code'])->name('poi.short_code');
+    Route::post('poi-short-code',[App\Http\Controllers\ProjectController::class,'short_code_view'])->name('poi.short_code_view');
     Route::get('statistics',[App\Http\Controllers\SettingsController::class,'statistics'])->name('settings.statistics');
 });
