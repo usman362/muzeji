@@ -68,7 +68,7 @@ class SettingsController extends Controller
             $totalDevices = POIVisit::where('project_id', $request->project)->get()->groupBy('device_type')->count();
             $short_codes = POIVisit::where('project_id', $request->project)->where('link_type', 'short_code')->get();
             $qrcodes = POIVisit::where('project_id', $request->project)->where('link_type', 'qrcode')->get();
-            $histories = ProjectHistory::where('project_id', $request->project)->get();
+            $histories = ProjectHistory::where('project_id', $request->project)->orderBy('created_at','desc')->get();
         } elseif (!empty($request->exhibition)) {
             $projectId = Exhibition::find($request->exhibition);
 
@@ -93,7 +93,7 @@ class SettingsController extends Controller
             $qrcodes = POIVisit::whereHas('poi', function ($q) use ($request) {
                 $q->where('exhibition_id', $request->exhibition);
             })->where('link_type', 'qrcode')->get();
-            $histories = ProjectHistory::where('project_id', $projectId->project_id)->get();
+            $histories = ProjectHistory::where('project_id', $projectId->project_id)->orderBy('created_at','desc')->get();
         } else {
             $visits = POIVisit::with('poi')->get()->groupBy('device');
             $computerVisits = POIVisit::where('device_type', 'Computer')->get()->groupBy('device')->count();
@@ -102,7 +102,7 @@ class SettingsController extends Controller
             $totalDevices = POIVisit::get()->groupBy('device_type')->count();
             $short_codes = POIVisit::where('link_type', 'short_code')->get();
             $qrcodes = POIVisit::where('link_type', 'qrcode')->get();
-            $histories = ProjectHistory::all();
+            $histories = ProjectHistory::orderBy('created_at','desc')->get();
         }
         return view('statistics', compact('projects', 'computerVisits', 'phoneVisits', 'tabletVisits', 'visits', 'totalDevices', 'histories', 'short_codes', 'qrcodes'));
     }
