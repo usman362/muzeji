@@ -28,9 +28,19 @@ class POIDetail extends Model
         return $this->belongsTo(POIMedia::class, 'id', 'detail_id')->where('type','audio');
     }
 
+    public function audios()
+    {
+        return $this->hasMany(POIMedia::class, 'detail_id', 'id')->where('type','audio');
+    }
+
     public function video()
     {
         return $this->belongsTo(POIMedia::class, 'id', 'detail_id')->where('type','video');
+    }
+
+    public function object()
+    {
+        return $this->belongsTo(POIMedia::class, 'id', 'detail_id')->where('type','object');
     }
 
     public function images()

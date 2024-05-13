@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('poi_id');
             $table->integer('detail_id');
-            $table->enum( 'type', ['image','video','audio','logo'] )->default('image');
+            $table->enum( 'type', ['image','video','audio','logo','object'] )->default('image');
             $table->string('media_url');
             $table->timestamps();
         });

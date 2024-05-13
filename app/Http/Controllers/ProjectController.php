@@ -199,7 +199,6 @@ class ProjectController extends Controller
                         ]);
                     }
                 }
-
                 if (!empty(request('audio' . $key))) {
                     POIMedia::where('detail_id', $detail->id)->where('type', 'audio')->delete();
                     foreach (request('audio' . $key) as $audioKey => $audio) {

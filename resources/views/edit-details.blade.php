@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('content')
     <div class="main-container" style="margin-top: 0">
+        <style>body{overflow-x: hidden}</style>
         <div class="back-button">
             <a href="{{ route('poi.index', $poi->exhibition->id) }}"><button><i class="fa fa-chevron-left"></i></button></a>
         </div>
@@ -658,14 +659,14 @@
                                     <label for="ai-checkbox">AI generate MP3</label>
                                 </div>
                                 <div class="audio-input">
-                                    <input type="file" id="audioInput{{ $detail->id }}" class="d-none"
-                                        name="audio{{ $detail->id }}[]"
-                                        onchange="showFileName('select-audio{{ $detail->id }}','audioInput{{ $detail->id }}')"
+                                    <input type="file" id="audioInput{{ $key }}" class="d-none"
+                                        name="audio{{ $key }}[]"
+                                        onchange="showFileName('select-audio{{ $key }}','audioInput{{ $key }}')"
                                         accept="audio/*" multiple />
                                     <div class=""></div>
                                     {{-- <div class="selected-file" id="selectedFile">Upload Logo</div> --}}
                                     <div class="input-box cursor-pointer" id="select-audio{{ $key }}"
-                                        onclick="fileInputClick('audioInput{{ $detail->id }}')">Upload some MP3 sounds
+                                        onclick="fileInputClick('audioInput{{ $key }}')">Upload some MP3 sounds
                                     </div>
                                     <div class="input-icon cursor-pointer" id="recordButton">
                                         <img src="{{ asset('images/mic-icon.png') }}" alt="mic-icon" />
@@ -678,6 +679,22 @@
                             <div class="playback mt-2">
                                 <audio src="" controls id="audio-playback" class="d-none"></audio>
                             </div>
+                            @if ($detail->audios->count() > 0)
+                                <center>
+                                    <div class="row mt-4">
+                                        @foreach ($detail->audios as $audio)
+                                            <div class="col-md-6">
+                                                <audio src="{{ asset('storage/' . $audio->media_url) }}"
+                                                    style="width: 80%" controls></audio>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <audio src="{{ asset('storage/' . $audio->media_url) }}"
+                                                    style="width: 80%" controls></audio>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </center>
+                            @endif
                             <div class="input-large-box cursor-pointer"
                                 onclick="fileInputClick('imageInput{{ $detail->id }}')">
                                 <div class="input-box-icon">
@@ -690,6 +707,18 @@
                                     accept="image/*" multiple />
                                 <div class=""></div>
                             </div>
+                            @if ($detail->images->count() > 0)
+                                <center>
+                                    <div class="row mt-2">
+                                        @foreach ($detail->images as $image)
+                                            <div class="col-md-3">
+                                                <img src="{{ asset('storage/' . $image->media_url) }}" width="100"
+                                                    alt="">
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </center>
+                            @endif
                             <div class="input-large-box cursor-pointer"
                                 onclick="fileInputClick('videoInput{{ $detail->id }}')">
                                 <div class="input-box-icon">
@@ -701,6 +730,12 @@
                                     accept="video/*" />
                                 <div class=""></div>
                             </div>
+                            @if (isset($detail->video->media_url))
+                                <center>
+                                    <video src="{{ asset('storage/' . $detail->video->media_url) }}" width="500"
+                                        class="mt-2" controls></video>
+                                </center>
+                            @endif
                             <div class="input-large-box cursor-pointer"
                                 onclick="fileInputClick('fileInput{{ $detail->id }}')">
                                 <div class="input-box-icon">
@@ -711,6 +746,12 @@
                                     onchange="showFileName('selectedFile{{ $detail->id }}','fileInput{{ $detail->id }}')" />
                                 <div class=""></div>
                             </div>
+                            @if (isset($detail->object->media_url))
+                                <center>
+                                    <img src="{{ asset('storage/' . $detail->object->media_url) }}" width="400" class="mt-2"
+                                        alt="">
+                                </center>
+                            @endif
                         </div>
                     @endforeach
 
