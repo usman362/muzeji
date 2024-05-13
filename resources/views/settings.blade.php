@@ -86,7 +86,7 @@
                         <div class="input-box cursor-pointer" onclick="inputClick('file-input-1')">
                             <input onchange="showFileName('file-input-1','selected-file-1')" type="file" name="file" id="file-input-1" />
                             <div class="upload-icon">
-                                <img src="images/upload-icon.png" alt="upload-icon" />
+                                <img src="{{asset('images/upload-icon.png')}}" alt="upload-icon" />
                             </div>
                             <div id="selected-file-1">Upload some files</div>
                         </div>
@@ -102,7 +102,7 @@
                         <div class="input-box cursor-pointer" onclick="inputClick('file-input-2')">
                             <input onchange="showFileName('file-input-2','selected-file-2')" type="file" name="splash" id="file-input-2" />
                             <div class="upload-icon">
-                                <img src="images/upload-icon.png" alt="upload-icon" />
+                                <img src="{{asset('images/upload-icon.png')}}" alt="upload-icon" />
                             </div>
                             <div id="selected-file-2">Splash screen</div>
                         </div>
