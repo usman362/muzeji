@@ -31,9 +31,7 @@ class ProjectController extends Controller
             $projectDetail = Project::with('exhibitions')->findOrFail($id);
         } else {
             $projects = Project::where('user_id', auth()->user()->id)->get();
-            $projectDetail = Project::whereHas('exhibitions', function ($q) {
-                $q->where('user_id', auth()->user()->id);
-            })->findOrFail($id);
+            $projectDetail = Project::with('exhibitions')->where('user_id',auth()->user()->id)->findOrFail($id);
         }
         return view('projects', compact('projects', 'projectDetail'));
     }
