@@ -14,7 +14,8 @@
             @csrf
             <div class="project-details">
                 <div class="main-title">
-                    <b><input type="text" class="form-control mb-2" name="main_title" value="{{ $poi->title }}" required></b>
+                    <b><input type="text" class="form-control mb-2" name="main_title" value="{{ $poi->title }}"
+                            required></b>
                     <span>Main Title</span>
                 </div>
 
@@ -665,7 +666,7 @@
                                 <div class="audio-input">
                                     <input type="file" id="audioInput{{ $key }}" class="d-none"
                                         name="audio{{ $key }}[]"
-                                        onchange="showFileName('select-audio{{ $key }}','audioInput{{ $key }}')"
+                                        onchange="showFileName({{$key}},'select-audio{{ $key }}','audioInput{{ $key }}')"
                                         accept="audio/*" multiple />
                                     <div class=""></div>
                                     {{-- <div class="selected-file" id="selectedFile">Upload Logo</div> --}}
@@ -707,10 +708,11 @@
                                 </div>
                                 <div class="selected-file" id="selectedLogo{{ $detail->id }}">Upload Photos</div>
                                 <input type="file" id="imageInput{{ $detail->id }}" class="d-none"
-                                    name="logo{{ $key }}[]"
-                                    onchange="showFileName('selectedLogo{{ $detail->id }}','imageInput{{ $detail->id }}')"
+                                    data-image="true" name="logo{{ $key }}[]"
+                                    onchange="showFileName({{$detail->id}},'selectedLogo{{ $detail->id }}','imageInput{{ $detail->id }}','image')"
                                     accept="image/*" multiple />
                                 <div class=""></div>
+                                <div id="imagePreviewContainer{{$detail->id}}" class="m-2"></div>
                             </div>
                             @if ($detail->images->count() > 0)
                                 <center>
@@ -733,7 +735,7 @@
                                 </div>
                                 <div class="selected-file" id="selectedVideo{{ $detail->id }}">Upload videos</div>
                                 <input type="file" id="videoInput{{ $detail->id }}" class="d-none" name="video[]"
-                                    onchange="showFileName('selectedVideo{{ $detail->id }}','videoInput{{ $detail->id }}')"
+                                    onchange="showFileName({{ $detail->id }},'selectedVideo{{ $detail->id }}','videoInput{{ $detail->id }}')"
                                     accept="video/*" />
                                 <div class=""></div>
                             </div>
@@ -750,7 +752,7 @@
                                 </div>
                                 <div class="selected-file" id="selectedFile{{ $detail->id }}">Upload 3D Object</div>
                                 <input type="file" id="fileInput{{ $detail->id }}" class="d-none" name="object[]"
-                                    onchange="showFileName('selectedFile{{ $detail->id }}','fileInput{{ $detail->id }}')" />
+                                    onchange="showFileName({{ $detail->id }},'selectedFile{{ $detail->id }}','fileInput{{ $detail->id }}')" />
                                 <div class=""></div>
                             </div>
                             @if (isset($detail->object->media_url))
@@ -774,12 +776,44 @@
 
 @push('scripts')
     <script>
-        function showFileName(id, value) {
-            const fileInput = document.getElementById(value);
-            const selectedFile = document.getElementById(id);
-            const fileName = fileInput.files[0].name;
-            selectedFile.innerHTML = `${fileName}`;
+        function showFileName(key, id, value, image = null) {
+    const fileInput = document.getElementById(value);
+    const selectedFile = document.getElementById(id);
+    const fileName = fileInput.files[0].name;
+    selectedFile.innerHTML = `${fileName}`;
+
+    if (image == 'image') {
+        selectedFile.innerHTML = `selected`;
+        const input = fileInput; // Use fileInput instead of event.target
+
+        // Dynamically create and append imagePreviewContainer if it doesn't exist
+        let imagePreviewContainer = document.getElementById('imagePreviewContainer' + key);
+        if (!imagePreviewContainer) {
+            imagePreviewContainer = document.createElement('div');
+            imagePreviewContainer.id = 'imagePreviewContainer' + key;
+            // Append imagePreviewContainer to wherever it should go in your DOM
+            // For example, if it should go after selectedFile:
+            selectedFile.parentNode.appendChild(imagePreviewContainer);
         }
+
+        imagePreviewContainer.innerHTML = ''; // Clear previous previews
+
+        if (input.files && input.files.length > 0) {
+            for (let i = 0; i < input.files.length; i++) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imagePreview = document.createElement('img');
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.maxWidth = '100px';
+                    imagePreview.style.maxHeight = '100px';
+                    imagePreviewContainer.appendChild(imagePreview);
+                }
+                reader.readAsDataURL(input.files[i]);
+            }
+        }
+    }
+}
+
 
         function changeBoxColor(inputId, id) {
             const colorInput = document.getElementById(inputId).value;
@@ -1394,7 +1428,7 @@
                                 </div>
                                 <div class="audio-input cursor-pointer" onclick="fileInputClick('audioInput${randomId}')">
                                     <input type="file" id="audioInput${randomId}" class="d-none" name="audio${keyId}[]"
-                                        onchange="showFileName('select-audio${randomId}','audioInput${randomId}')" accept="audio/*" multiple/>
+                                        onchange="showFileName(${randomId},'select-audio${randomId}','audioInput${randomId}')" accept="audio/*" multiple/>
                                     <div class=""></div>
                                     <div class="input-box" id="select-audio${randomId}">Upload some MP3 sounds</div>
                                     <div class="input-icon">
@@ -1407,9 +1441,10 @@
                                     <img src="{{ asset('images/photo-icon.png') }}" alt="file-icon" />
                                 </div>
                                 <div class="selected-file" id="selectedLogo${randomId}">Upload Logo</div>
-                                <input type="file" id="imageInput${randomId}" class="d-none" name="logo${keyId}[]"
-                                    onchange="showFileName('selectedLogo${randomId}','imageInput${randomId}')" accept="image/*" />
+                                <input type="file" id="imageInput${randomId}" class="d-none" data-image="true" name="logo${keyId}[]"
+                                    onchange="showFileName(${randomId},'selectedLogo${randomId}','imageInput${randomId}','image')" accept="image/*" />
                                 <div class=""></div>
+                                <div id="imagePreviewContainer${randomId}" class="m-2"></div>
                             </div>
                             <div class="input-large-box cursor-pointer" onclick="fileInputClick('videoInput${randomId}')">
                                 <div class="input-box-icon">
@@ -1417,7 +1452,7 @@
                                 </div>
                                 <div class="selected-file" id="selectedVideo${randomId}">Upload videos</div>
                                 <input type="file" id="videoInput${randomId}" class="d-none" name="video[]"
-                                    onchange="showFileName('selectedVideo${randomId}','videoInput${randomId}')" accept="video/*" />
+                                    onchange="showFileName(${randomId},'selectedVideo${randomId}','videoInput${randomId}')" accept="video/*" />
                                 <div class=""></div>
                             </div>
                             <div class="input-large-box cursor-pointer" onclick="fileInputClick('fileInput${randomId}')">
@@ -1426,7 +1461,7 @@
                                 </div>
                                 <div class="selected-file" id="selectedFile${randomId}">Upload 3D Object</div>
                                 <input type="file" id="fileInput${randomId}" class="d-none" name="object[]"
-                                    onchange="showFileName('selectedFile${randomId}','fileInput${randomId}')" />
+                                    onchange="showFileName(${randomId},'selectedFile${randomId}','fileInput${randomId}')" />
                                 <div class=""></div>
                             </div>
                         </div>

@@ -80,3 +80,23 @@ function stopRecording() {
 //     var res = name.toISOString().slice(0,10)
 //     downloadAudio.download = res + '.wav';
 // }
+
+// function previewImages(event) {
+//     const input = event.target;
+//     const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+//     imagePreviewContainer.innerHTML = ''; // Clear previous previews
+
+//     if (input.files && input.files.length > 0) {
+//         for (let i = 0; i < input.files.length; i++) {
+//             const reader = new FileReader();
+//             reader.onload = function(e) {
+//                 const imagePreview = document.createElement('img');
+//                 imagePreview.src = e.target.result;
+//                 imagePreview.style.maxWidth = '200px';
+//                 imagePreview.style.maxHeight = '200px';
+//                 imagePreviewContainer.appendChild(imagePreview);
+//             }
+//             reader.readAsDataURL(input.files[i]);
+//         }
+//     }
+// }
