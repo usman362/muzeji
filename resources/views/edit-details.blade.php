@@ -678,6 +678,9 @@
                                     <div class="input-icon cursor-pointer d-none" id="stopButton">
                                         <img src="{{ asset('images/mic-icon.png') }}" alt="mic-icon" />
                                     </div>
+                                    <div class="input-icon cursor-pointer d-none" id="clearButton">
+                                        <i class="fa fa-close"></i>
+                                    </div>
                                 </div>
                             </div>
                             <div class="playback mt-2">

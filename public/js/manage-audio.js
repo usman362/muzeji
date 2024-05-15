@@ -15,6 +15,10 @@ const preview = document.getElementById("audio-playback");
 // const downloadAudio = document.getElementById("downloadButton");
 // downloadAudio.addEventListener("click", downloadRecording);
 
+$('#clearButton').click(function(){
+    $('#audio-playback').addClass('d-none');
+});
+
 function startRecording() {
     // button settings
     recordButton.disabled = true;
@@ -22,6 +26,7 @@ function startRecording() {
     stopButton.disabled = false;
     $("#stopButton").removeClass("d-none");
     $("#stopButton").css("border","2px solid red");
+    $('#clearButton').addClass('d-none');
 
 
     if (!$("#audio-playback").hasClass("d-none")) {
@@ -66,7 +71,7 @@ function stopRecording() {
     stopButton.disabled = true;
 
     $("#audio-playback").removeClass("d-none");
-
+    $('#clearButton').removeClass('d-none');
     // $("#downloadContainer").removeClass("d-none");
 }
 
