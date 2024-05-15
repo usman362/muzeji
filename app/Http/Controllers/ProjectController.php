@@ -154,17 +154,9 @@ class ProjectController extends Controller
 
     public function poiShow(Request $request, $id, $qrcode = null)
     {
-        if (auth()->user()->is_admin == true) {
-            $poi = POI::query()->with(['exhibition:id,project_id', 'details' => function ($q) {
-                $q->with(['images', 'audio', 'video']);
-            }])->where('short_code', $id);
-        } else {
-            $poi = POI::query()->with(['details' => function ($q) {
-                $q->with(['images', 'audio', 'video']);
-            }])->whereHas('exhibition', function ($q) {
-                $q->where('user_id', auth()->user()->id);
-            })->where('short_code', $id);
-        }
+        $poi = POI::query()->with(['exhibition:id,project_id', 'details' => function ($q) {
+            $q->with(['images', 'audio', 'video']);
+        }])->where('short_code', $id);
         if (!empty($qrcode)) {
             $poi->where('qr_hash', $qrcode);
         }
