@@ -69,6 +69,31 @@ class SettingsController extends Controller
                 $short_codes = POIVisit::where('project_id', $project->id)->where('link_type', 'short_code')->get();
                 $qrcodes = POIVisit::where('project_id', $project->id)->where('link_type', 'qrcode')->get();
                 $histories = ProjectHistory::where('project_id', $project->id)->orderBy('created_at', 'desc')->get();
+            }elseif (!empty($request->exhibition)) {
+                $projectId = Exhibition::find($request->exhibition);
+
+                $visits = POIVisit::whereHas('poi', function ($q) use ($request) {
+                    $q->where('exhibition_id', $request->exhibition);
+                })->get()->groupBy('device');
+                $computerVisits = POIVisit::whereHas('poi', function ($q) use ($request) {
+                    $q->where('exhibition_id', $request->exhibition);
+                })->where('device_type', 'Computer')->get()->groupBy('device')->count();
+                $phoneVisits = POIVisit::whereHas('poi', function ($q) use ($request) {
+                    $q->where('exhibition_id', $request->exhibition);
+                })->where('device_type', 'Phone')->get()->groupBy('device')->count();
+                $tabletVisits = POIVisit::whereHas('poi', function ($q) use ($request) {
+                    $q->where('exhibition_id', $request->exhibition);
+                })->where('device_type', 'Tablet')->get()->groupBy('device')->count();
+                $totalDevices = POIVisit::whereHas('poi', function ($q) use ($request) {
+                    $q->where('exhibition_id', $request->exhibition);
+                })->get()->groupBy('device_type')->count();
+                $short_codes = POIVisit::whereHas('poi', function ($q) use ($request) {
+                    $q->where('exhibition_id', $request->exhibition);
+                })->where('link_type', 'short_code')->get();
+                $qrcodes = POIVisit::whereHas('poi', function ($q) use ($request) {
+                    $q->where('exhibition_id', $request->exhibition);
+                })->where('link_type', 'qrcode')->get();
+                $histories = ProjectHistory::where('project_id', $projectId->project_id)->orderBy('created_at','desc')->get();
             } else {
                 $visits = POIVisit::with('poi')->get()->groupBy('device');
                 $computerVisits = POIVisit::where('device_type', 'Computer')->get()->groupBy('device')->count();
@@ -79,6 +104,70 @@ class SettingsController extends Controller
                 $qrcodes = POIVisit::where('link_type', 'qrcode')->get();
                 $histories = ProjectHistory::orderBy('created_at', 'desc')->get();
             }
+        }elseif (!empty($request->exhibition)) {
+            $projects = Project::where('user_id', auth()->user()->id)->get();
+            $project = Project::where('user_id', auth()->user()->id)->first();
+            $projectId = Exhibition::whereHas('project',function($q){
+                $q->where('user_id',auth()->user()->id);
+            })->find($request->exhibition);
+
+            $visits = POIVisit::whereHas('poi', function ($q) use ($request) {
+                $q->where('exhibition_id', $request->exhibition)
+                ->whereHas('exhibition',function($e){
+                    $e->whereHas('project',function($p){
+                        $p->where('user_id',auth()->user()->id);
+                    });
+                });
+            })->get()->groupBy('device');
+            $computerVisits = POIVisit::whereHas('poi', function ($q) use ($request) {
+                $q->where('exhibition_id', $request->exhibition)
+                ->whereHas('exhibition',function($e){
+                    $e->whereHas('project',function($p){
+                        $p->where('user_id',auth()->user()->id);
+                    });
+                });
+            })->where('device_type', 'Computer')->get()->groupBy('device')->count();
+            $phoneVisits = POIVisit::whereHas('poi', function ($q) use ($request) {
+                $q->where('exhibition_id', $request->exhibition)
+                ->whereHas('exhibition',function($e){
+                    $e->whereHas('project',function($p){
+                        $p->where('user_id',auth()->user()->id);
+                    });
+                });
+            })->where('device_type', 'Phone')->get()->groupBy('device')->count();
+            $tabletVisits = POIVisit::whereHas('poi', function ($q) use ($request) {
+                $q->where('exhibition_id', $request->exhibition)
+                ->whereHas('exhibition',function($e){
+                    $e->whereHas('project',function($p){
+                        $p->where('user_id',auth()->user()->id);
+                    });
+                });
+            })->where('device_type', 'Tablet')->get()->groupBy('device')->count();
+            $totalDevices = POIVisit::whereHas('poi', function ($q) use ($request) {
+                $q->where('exhibition_id', $request->exhibition)
+                ->whereHas('exhibition',function($e){
+                    $e->whereHas('project',function($p){
+                        $p->where('user_id',auth()->user()->id);
+                    });
+                });
+            })->get()->groupBy('device_type')->count();
+            $short_codes = POIVisit::whereHas('poi', function ($q) use ($request) {
+                $q->where('exhibition_id', $request->exhibition)
+                ->whereHas('exhibition',function($e){
+                    $e->whereHas('project',function($p){
+                        $p->where('user_id',auth()->user()->id);
+                    });
+                });
+            })->where('link_type', 'short_code')->get();
+            $qrcodes = POIVisit::whereHas('poi', function ($q) use ($request) {
+                $q->where('exhibition_id', $request->exhibition)
+                ->whereHas('exhibition',function($e){
+                    $e->whereHas('project',function($p){
+                        $p->where('user_id',auth()->user()->id);
+                    });
+                });
+            })->where('link_type', 'qrcode')->get();
+            $histories = ProjectHistory::where('project_id', $projectId->project_id)->orderBy('created_at','desc')->get();
         } else {
             $projects = Project::where('user_id', auth()->user()->id)->get();
             $project = Project::where('user_id', auth()->user()->id)->first();
