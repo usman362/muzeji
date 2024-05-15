@@ -1,11 +1,16 @@
 <?php
 
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 
 Auth::routes();
 
 Route::get('poi/{id}/viewpoint/{qrcode?}',[App\Http\Controllers\ProjectController::class,'poiShow'])->name('poi.show');
+
+Route::get('generate-admin-user', function () {
+    Artisan::call('db:seed', ['--class' => 'AdminUserSeeder']);
+});
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/', [App\Http\Controllers\HomeController::class, 'index']);
@@ -37,6 +42,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('settings/{id?}',[App\Http\Controllers\SettingsController::class,'store'])->name('settings.store');
 
     Route::get('poi-short-code',[App\Http\Controllers\ProjectController::class,'short_code'])->name('poi.short_code');
+
     Route::post('poi-short-code',[App\Http\Controllers\ProjectController::class,'short_code_view'])->name('poi.short_code_view');
+
     Route::get('statistics',[App\Http\Controllers\SettingsController::class,'statistics'])->name('settings.statistics');
 });
