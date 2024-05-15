@@ -38,7 +38,7 @@ class SettingsController extends Controller
             $logoPath = Helpers::fileUpload($request->file, 'images/project-logo');
         }
         if (!empty($request->splash)) {
-            $splashPath = Helpers::fileUpload($request->file, 'images/project-splash');
+            $splashPath = Helpers::fileUpload($request->splash, 'images/project-splash');
         }
         $project = Project::find($id);
         $project->updateOrCreate(

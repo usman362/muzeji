@@ -104,7 +104,7 @@
                             <div id="selected-file-2">Splash screen</div>
                         </div>
                     </div>
-                    {{-- <img src="{{asset('storage/'.$projectDetail->logo)}}" alt="" width="100"> --}}
+                    <img src="{{asset('storage/'.$projectDetail->splash)}}" alt="" width="100">
                 </div>
                 <div class="submit-details">
                     <button type="submit">SAVE</button>
