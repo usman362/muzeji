@@ -199,7 +199,9 @@ class ProjectController extends Controller
                 $poi = POI::with('exhibition:id,project_id')->findOrFail($id);
             } else {
                 $poi = POI::whereHas('exhibition', function ($q) {
-                    $q->where('user_id', auth()->user()->id);
+                    $q->whereHas('project',function($p){
+                        $p->where('user_id', auth()->user()->id);
+                    });
                 })->findOrFail($id);
             }
             if (!empty($request->main_title)) {
@@ -397,7 +399,9 @@ class ProjectController extends Controller
             $poi = POI::query()->with(['details' => function ($q) {
                 $q->with(['images', 'audio', 'video']);
             }])->whereHas('exhibition', function ($q) {
-                $q->where('user_id', auth()->user()->id);
+                $q->whereHas('project',function($p){
+                    $p->where('user_id', auth()->user()->id);
+                });
             })->where('short_code', $request->short_code);
         }
         $poi = $poi->first();
