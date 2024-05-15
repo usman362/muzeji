@@ -130,20 +130,6 @@ class ProjectController extends Controller
                 'project_id' => $poi->exhibition->project->id,
                 'description' => $request->title . ' POI ' . $status . ' for this Project',
             ]);
-            $poiDetail = POIDetail::updateOrCreate([
-                'id' => $request->detail_id,
-            ], [
-                'poi_id' => $poi->id,
-                'title' => $request->title,
-                'language' => 'en',
-                'flag' => 'uk',
-                'use_google_translate' => 0,
-            ]);
-            ProjectHistory::create([
-                'poi_id' => $poi->id,
-                'project_id' => $poi->exhibition->project->id,
-                'description' => $request->title . ' POI ' . $status . ' for this Project',
-            ]);
             session()->flash('success', 'POI has been ' . $status . ' Successfully!');
             return back();
         } catch (\Exception $e) {
