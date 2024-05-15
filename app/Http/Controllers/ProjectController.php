@@ -184,7 +184,9 @@ class ProjectController extends Controller
         } else {
             $projects = Project::where('user_id', auth()->user()->id)->get();
             $poi = POI::whereHas('exhibition', function ($q) {
-                $q->where('user_id', auth()->user()->id);
+                $q->whereHas('project',function($p){
+                    $p->where('user_id', auth()->user()->id);
+                });
             })->findOrFail($id);
         }
         return view('edit-details', compact('projects', 'poi'));
