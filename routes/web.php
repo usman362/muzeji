@@ -26,6 +26,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('poi/{id}/update',[App\Http\Controllers\ProjectController::class,'poiUpdate'])->name('poi.update');
 
+    Route::get('delete-media/{id}',[App\Http\Controllers\ProjectController::class,'deleteMedia'])->name('delete.media');
+
     Route::get('poi/{short_code}/qr-code/{qrcode}',[App\Http\Controllers\ProjectController::class,'qrcode_download'])->name('qrcode.download');
 
     Route::post('exhibitions/{id}',[App\Http\Controllers\ProjectController::class,'exhibitionStore'])->name('exhibition.store');

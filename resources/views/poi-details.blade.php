@@ -64,7 +64,7 @@
                             @foreach ($detail->images as $detailKey => $image)
                                 <div class="mySlides mySlides{{ $key }} fade">
                                     <div class="box"
-                                        style="background: url({{ asset('storage/' . $image->media_url) }});background-size:cover">
+                                        style="background: url('{{ asset('storage/' . $image->media_url) }}');background-size:cover">
                                     </div>
                                 </div>
                             @endforeach

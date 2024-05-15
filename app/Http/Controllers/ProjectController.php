@@ -13,6 +13,7 @@ use App\Models\Project;
 use App\Models\ProjectHistory;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -27,97 +28,128 @@ class ProjectController extends Controller
     {
         if (auth()->user()->is_admin == true) {
             $projects = Project::all();
+            $projectDetail = Project::with('exhibitions')->findOrFail($id);
         } else {
             $projects = Project::where('user_id', auth()->user()->id)->get();
+            $projectDetail = Project::whereHas('exhibitions', function ($q) {
+                $q->where('user_id', auth()->user()->id);
+            })->findOrFail($id);
         }
-        $projectDetail = Project::with('exhibitions')->findOrFail($id);
         return view('projects', compact('projects', 'projectDetail'));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'file' => 'required|file|image',
-            'title' => 'required|unique:users,email',
-            'description' => 'required',
-        ]);
-        $status = empty($request->id) ? 'Created' : 'Updated';
-        $logoPath = Helpers::fileUpload($request->file, 'images/project-logo');
-        $randomPass = $this->generateRandomShortCode(8);
-        $password = Hash::make($randomPass);
-        $user = User::create([
-            'email' => $request->title,
-            'name' => $request->description,
-            'password' => $password,
-            'is_admin' => 0
-        ]);
-        $project = Project::updateOrCreate(
-            ['id' => $request->id],
-            [
-                'logo' => $logoPath,
-                'title' => $request->title,
-                'description' => $request->description,
-                'head_color' => $request->head_color,
-                'bg_color' => $request->bg_color,
-                'user_id' => $user->id
-            ]
-        );
-        ProjectHistory::create([
-            'poi_id' => 0,
-            'project_id' => $project->id,
-            'description' => 'Project Created',
-        ]);
-        event(new UserCreated($user, $randomPass));
-        session()->flash('success', 'Project has been ' . $status . ' Successfully!');
-        return back();
+        try {
+
+            $request->validate([
+                'file' => 'required|file|image',
+                'title' => 'required|unique:users,email',
+                'description' => 'required',
+            ]);
+            $status = empty($request->id) ? 'Created' : 'Updated';
+            $logoPath = Helpers::fileUpload($request->file, 'images/project-logo');
+            $randomPass = $this->generateRandomShortCode(8);
+            $password = Hash::make($randomPass);
+            $user = User::create([
+                'email' => $request->title,
+                'name' => $request->description,
+                'password' => $password,
+                'is_admin' => 0
+            ]);
+            $project = Project::updateOrCreate(
+                ['id' => $request->id],
+                [
+                    'logo' => $logoPath,
+                    'title' => $request->title,
+                    'description' => $request->description,
+                    'head_color' => $request->head_color,
+                    'bg_color' => $request->bg_color,
+                    'user_id' => $user->id
+                ]
+            );
+            ProjectHistory::create([
+                'poi_id' => 0,
+                'project_id' => $project->id,
+                'description' => 'Project Created',
+            ]);
+            event(new UserCreated($user, $randomPass));
+            session()->flash('success', 'Project has been ' . $status . ' Successfully!');
+            return back();
+        } catch (Exception $e) {
+            session()->flash('error', $e);
+            return back();
+        }
     }
 
     public function poiIndex($id)
     {
         if (auth()->user()->is_admin == true) {
             $projects = Project::all();
+            $exhibition = Exhibition::with(['pois' => function ($q) {
+                $q->with('detail')->get();
+            }])->findOrFail($id);
         } else {
             $projects = Project::where('user_id', auth()->user()->id)->get();
+            $exhibition = Exhibition::with(['pois' => function ($q) {
+                $q->with('detail')->get();
+            }])->where('user_id', auth()->user()->id)->findOrFail($id);
         }
-        $exhibition = Exhibition::with(['pois' => function ($q) {
-            $q->with('detail')->get();
-        }])->find($id);
         return view('project-details', compact('projects', 'exhibition'));
     }
 
     public function poiStore(Request $request, $id)
     {
-        $request->validate([
-            'title' => 'required',
-        ]);
-        $uniqueShortCode = $this->generateUniqueShortCode();
-        $uniqueQRhash = $this->generateQRHash();
-        $status = empty($request->poi_id) ? 'Created' : 'Updated';
-        $poi = POI::updateOrCreate([
-            'id' => $request->poi_id
-        ], [
-            'title' => $request->title,
-            'exhibition_id' => $id,
-            'short_code' => $uniqueShortCode,
-            'qr_hash' => $uniqueQRhash
-        ]);
+        try {
+            $request->validate([
+                'title' => 'required',
+            ]);
+            $uniqueShortCode = $this->generateUniqueShortCode();
+            $uniqueQRhash = $this->generateQRHash();
+            $status = empty($request->poi_id) ? 'Created' : 'Updated';
+            $poi = POI::updateOrCreate([
+                'id' => $request->poi_id
+            ], [
+                'title' => $request->title,
+                'exhibition_id' => $id,
+                'short_code' => $uniqueShortCode,
+                'qr_hash' => $uniqueQRhash
+            ]);
 
-        $poiDetail = POIDetail::updateOrCreate([
-            'id' => $request->detail_id,
-        ], [
-            'poi_id' => $poi->id,
-            'title' => $request->title,
-            'language' => 'en',
-            'flag' => 'uk',
-            'use_google_translate' => 0,
-        ]);
-        ProjectHistory::create([
-            'poi_id' => $poi->id,
-            'project_id' => $poi->exhibition->project->id,
-            'description' => $request->title . ' POI ' . $status . ' for this Project',
-        ]);
-        session()->flash('success', 'POI has been ' . $status . ' Successfully!');
-        return back();
+            $poiDetail = POIDetail::updateOrCreate([
+                'id' => $request->detail_id,
+            ], [
+                'poi_id' => $poi->id,
+                'title' => $request->title,
+                'language' => 'en',
+                'flag' => 'uk',
+                'use_google_translate' => 0,
+            ]);
+            ProjectHistory::create([
+                'poi_id' => $poi->id,
+                'project_id' => $poi->exhibition->project->id,
+                'description' => $request->title . ' POI ' . $status . ' for this Project',
+            ]);
+            $poiDetail = POIDetail::updateOrCreate([
+                'id' => $request->detail_id,
+            ], [
+                'poi_id' => $poi->id,
+                'title' => $request->title,
+                'language' => 'en',
+                'flag' => 'uk',
+                'use_google_translate' => 0,
+            ]);
+            ProjectHistory::create([
+                'poi_id' => $poi->id,
+                'project_id' => $poi->exhibition->project->id,
+                'description' => $request->title . ' POI ' . $status . ' for this Project',
+            ]);
+            session()->flash('success', 'POI has been ' . $status . ' Successfully!');
+            return back();
+        } catch (\Exception $e) {
+            session()->flash('error', $e);
+            return back();
+        }
     }
 
     public function poiShow(Request $request, $id, $qrcode = null)
@@ -136,7 +168,7 @@ class ProjectController extends Controller
         if (!empty($qrcode)) {
             $poi->where('qr_hash', $qrcode);
         }
-        $poi = $poi->first();
+        $poi = $poi->firstOrFail();
         $agent = new Agent();
         $deviceType = $this->getDeviceType($agent);
         if (!empty($poi)) {
@@ -156,15 +188,12 @@ class ProjectController extends Controller
     {
         if (auth()->user()->is_admin == true) {
             $projects = Project::all();
-            $poi = POI::with('exhibition:id,project_id')->find($id);
+            $poi = POI::with('exhibition:id,project_id')->findOrFail($id);
         } else {
             $projects = Project::where('user_id', auth()->user()->id)->get();
             $poi = POI::whereHas('exhibition', function ($q) {
                 $q->where('user_id', auth()->user()->id);
-            })->find($id);
-        }
-        if (empty($poi)) {
-            return view('404');
+            })->findOrFail($id);
         }
         return view('edit-details', compact('projects', 'poi'));
     }
@@ -172,7 +201,13 @@ class ProjectController extends Controller
     public function poiUpdate(Request $request, $id)
     {
         try {
-            $poi = POI::with('exhibition:id,project_id')->find($id);
+            if (auth()->user()->is_admin == true) {
+                $poi = POI::with('exhibition:id,project_id')->findOrFail($id);
+            } else {
+                $poi = POI::whereHas('exhibition', function ($q) {
+                    $q->where('user_id', auth()->user()->id);
+                })->findOrFail($id);
+            }
             if (!empty($request->main_title)) {
                 $poi->title = $request->main_title;
                 $poi->save();
@@ -187,7 +222,6 @@ class ProjectController extends Controller
                 ]);
 
                 if (!empty(request('logo' . $key))) {
-                    POIMedia::where('detail_id', $detail->id)->where('type', 'logo')->delete();
                     foreach (request('logo' . $key) as $logoKey => $logo) {
                         $logoPath = Helpers::fileUpload($logo, 'images/poi-logo');
                         POIMedia::create([
@@ -199,7 +233,6 @@ class ProjectController extends Controller
                     }
                 }
                 if (!empty(request('audio' . $key))) {
-                    POIMedia::where('detail_id', $detail->id)->where('type', 'audio')->delete();
                     foreach (request('audio' . $key) as $audioKey => $audio) {
                         $audioPath = Helpers::fileUpload($audio, 'images/poi-audios');
                         POIMedia::create([
@@ -239,9 +272,11 @@ class ProjectController extends Controller
                 ]);
             }
 
+            session()->flash('success', 'POI has been Updated Successfully!');
             return back();
         } catch (\Exception $e) {
-            dd($e);
+            session()->flash('error', $e);
+            return back();
         }
     }
 
@@ -264,24 +299,34 @@ class ProjectController extends Controller
 
     public function exhibitionStore(Request $request, $id)
     {
-        $request->validate([
-            'title' => 'required',
-        ]);
-        $project = Project::find($id);
-        $status = empty($request->exhibition_id) ? 'Created' : 'Updated';
-        $exhibition = Exhibition::updateOrCreate(['id' => $request->exhibition_id], [
-            'title' => $request->title,
-            'user_id' => $project->user_id ?? auth()->user()->id,
-            'project_id' => $id,
-            'description' =>  $request->description,
-        ]);
-        ProjectHistory::create([
-            'poi_id' => 0,
-            'project_id' => $exhibition->project_id,
-            'description' => $request->title . ' Exhibition ' . $status . ' for this Project',
-        ]);
-        session()->flash('success', 'Exhibition has been ' . $status . ' Successfully!');
-        return back();
+        try {
+
+            $request->validate([
+                'title' => 'required',
+            ]);
+            if (auth()->user()->is_admin == true) {
+                $project = Project::find($id);
+            } else {
+                $project = Project::where('user_id', auth()->user()->id)->find($id);
+            }
+            $status = empty($request->exhibition_id) ? 'Created' : 'Updated';
+            $exhibition = Exhibition::updateOrCreate(['id' => $request->exhibition_id], [
+                'title' => $request->title,
+                'user_id' => $project->user_id ?? auth()->user()->id,
+                'project_id' => $id,
+                'description' =>  $request->description,
+            ]);
+            ProjectHistory::create([
+                'poi_id' => 0,
+                'project_id' => $exhibition->project_id,
+                'description' => $request->title . ' Exhibition ' . $status . ' for this Project',
+            ]);
+            session()->flash('success', 'Exhibition has been ' . $status . ' Successfully!');
+            return back();
+        } catch (\Exception $e) {
+            session()->flash('error', $e);
+            return back();
+        }
     }
 
     protected function generateUniqueShortCode($length = 6)
@@ -290,7 +335,6 @@ class ProjectController extends Controller
         while (POI::where('short_code', $shortCode)->exists()) {
             $shortCode = $this->generateRandomShortCode($length);
         }
-
         return $shortCode;
     }
 
@@ -368,5 +412,19 @@ class ProjectController extends Controller
             return back();
         }
         return redirect(route('poi.show', $request->short_code));
+    }
+
+    public function deleteMedia(Request $request, $id)
+    {
+        try {
+            $media = POIMedia::find($id);
+            if ($media->delete()) {
+                return response()->json(['success' => 'Media Deleted Successfully']);
+            }else{
+                return response()->json(['error' => 'Something Went Wrong!']);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e]);
+        }
     }
 }

@@ -12,7 +12,7 @@
         <div class="statistics-container">
             <div class="projects-dropdown dropdown">
                 <div class="dropdown-box">
-                    <span id="project-select">{{ !empty(\App\Models\Project::find(request()->project)) ? \App\Models\Project::find(request()->project)->title : 'Select the Project'}}</span>
+                    <span id="project-select">{{ !empty($project) ? $project->title : 'Select the Project'}}</span>
                     <i class="fa fa-chevron-down"></i>
                 </div>
                 <div class="submenu project-submenu" id="dropdown-items">

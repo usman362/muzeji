@@ -8,7 +8,7 @@
             <div class="projects-dropdown dropdown">
                 <div class="dropdown-box">
                     <span
-                        id="project-select">{{ !empty(\App\Models\Project::find(request()->project)) ? \App\Models\Project::find(request()->project)->title : 'Select the Project' }}</span>
+                        id="project-select">{{ !empty($projectDetail) ? $projectDetail->title : 'Select the Project' }}</span>
                     <i class="fa fa-chevron-down"></i>
                 </div>
                 <div class="submenu project-submenu" id="dropdown-items">
@@ -22,12 +22,9 @@
                 </div>
             </div>
 
-            @if (!empty(request('project')) && !empty(\App\Models\Project::find(request()->project)))
-            <form action="{{route('settings.store',request()->project)}}" method="post" enctype="multipart/form-data">
+            @if (!empty($projectDetail) && $projectDetail->count() > 0)
+            <form action="{{route('settings.store',$projectDetail->id)}}" method="post" enctype="multipart/form-data">
                 @csrf
-                @php
-                    $project = \App\Models\Project::find(request()->project);
-                @endphp
                 <div class="input-sections">
                     <div class="colors-radio-box radio-box">
                         <input type="radio" name="colors-radio" id="colors-radio" />
@@ -39,10 +36,10 @@
                         <div>
                             <sub>Background Color</sub>
                             <div class="colors-input-box cursor-pointer " onclick="inputClick('color-input-1')">
-                                <input type="color" id="color-input-1" name="bg_color" value="{{$project->bg_color ?? '#0090ff'}}"
+                                <input type="color" id="color-input-1" name="bg_color" value="{{$projectDetail->bg_color ?? '#0090ff'}}"
                                     onchange="changeBoxColor('color-input-1', 'color-box-1', 'color-code-1')" />
-                                <div id="color-box-1" class="color-box" style="background: {{$project->bg_color ?? '#0090ff'}}"></div>
-                                <div id="color-code-1" class="color-code">{{$project->bg_color ?? '#0090ff'}}</div>
+                                <div id="color-box-1" class="color-box" style="background: {{$projectDetail->bg_color ?? '#0090ff'}}"></div>
+                                <div id="color-code-1" class="color-code">{{$projectDetail->bg_color ?? '#0090ff'}}</div>
                             </div>
                             {{-- <i class="fa fa-close mt-2 cursor-pointer" onclick="removeColorBox(this)"></i> --}}
                         </div>
@@ -50,10 +47,10 @@
                         <div>
                             <sub>Header Color</sub>
                             <div class="colors-input-box cursor-pointer " onclick="inputClick('color-input-2')">
-                                <input type="color" id="color-input-2" name="head_color" value="{{$project->head_color ?? '#0090ff'}}"
+                                <input type="color" id="color-input-2" name="head_color" value="{{$projectDetail->head_color ?? '#0090ff'}}"
                                     onchange="changeBoxColor('color-input-2', 'color-box-2', 'color-code-2')" />
-                                <div id="color-box-2" class="color-box" style="background: {{$project->head_color ?? '#0090ff'}}"></div>
-                                <div id="color-code-2" class="color-code">{{$project->head_color ?? '#0090ff'}}</div>
+                                <div id="color-box-2" class="color-box" style="background: {{$projectDetail->head_color ?? '#0090ff'}}"></div>
+                                <div id="color-code-2" class="color-code">{{$projectDetail->head_color ?? '#0090ff'}}</div>
                             </div>
                             {{-- <i class="fa fa-close mt-2 cursor-pointer" onclick="removeColorBox(this)"></i> --}}
                         </div>
@@ -61,10 +58,10 @@
                         <div>
                             <sub>Splash Color</sub>
                             <div class="colors-input-box cursor-pointer " onclick="inputClick('color-input-5')">
-                                <input type="color" id="color-input-5" name="splash_color" value="{{$project->splash_color ?? '#0090ff'}}"
+                                <input type="color" id="color-input-5" name="splash_color" value="{{$projectDetail->splash_color ?? '#0090ff'}}"
                                     onchange="changeBoxColor('color-input-5', 'color-box-5', 'color-code-5')" />
-                                <div id="color-box-5" class="color-box" style="background: {{$project->splash_color ?? '#0090ff'}}"></div>
-                                <div id="color-code-5" class="color-code">{{$project->splash_color ?? '#0090ff'}}</div>
+                                <div id="color-box-5" class="color-box" style="background: {{$projectDetail->splash_color ?? '#0090ff'}}"></div>
+                                <div id="color-code-5" class="color-code">{{$projectDetail->splash_color ?? '#0090ff'}}</div>
                             </div>
                             {{-- <i class="fa fa-close mt-2 cursor-pointer" onclick="removeColorBox(this)"></i> --}}
                         </div>
@@ -91,7 +88,7 @@
                             <div id="selected-file-1">Upload some files</div>
                         </div>
                     </div>
-                    <img src="{{asset('storage/'.$project->logo)}}" alt="" width="100">
+                    <img src="{{asset('storage/'.$projectDetail->logo)}}" alt="" width="100">
                 </div>
                 <div class="input-sections">
                     <div class="design-radio-box radio-box">
@@ -107,7 +104,7 @@
                             <div id="selected-file-2">Splash screen</div>
                         </div>
                     </div>
-                    {{-- <img src="{{asset('storage/'.$project->logo)}}" alt="" width="100"> --}}
+                    {{-- <img src="{{asset('storage/'.$projectDetail->logo)}}" alt="" width="100"> --}}
                 </div>
                 <div class="submit-details">
                     <button type="submit">SAVE</button>

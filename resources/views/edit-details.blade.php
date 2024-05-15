@@ -1,7 +1,11 @@
 @extends('layouts.app')
 @section('content')
     <div class="main-container" style="margin-top: 0">
-        <style>body{overflow-x: hidden}</style>
+        <style>
+            body {
+                overflow-x: hidden
+            }
+        </style>
         <div class="back-button">
             <a href="{{ route('poi.index', $poi->exhibition->id) }}"><button><i class="fa fa-chevron-left"></i></button></a>
         </div>
@@ -683,13 +687,11 @@
                                 <center>
                                     <div class="row mt-4">
                                         @foreach ($detail->audios as $audio)
-                                            <div class="col-md-6">
+                                            <div class="col-md-6" style="display: flex" id="media{{ $audio->id }}">
                                                 <audio src="{{ asset('storage/' . $audio->media_url) }}"
                                                     style="width: 80%" controls></audio>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <audio src="{{ asset('storage/' . $audio->media_url) }}"
-                                                    style="width: 80%" controls></audio>
+                                                <a href="javascript:void(0)" class="mt-3 ml-2 delete-media"
+                                                    data-id="{{ $audio->id }}"><i class="fa fa-trash"></i></a>
                                             </div>
                                         @endforeach
                                     </div>
@@ -711,9 +713,11 @@
                                 <center>
                                     <div class="row mt-2">
                                         @foreach ($detail->images as $image)
-                                            <div class="col-md-3">
+                                            <div class="col-md-3" style="display: flex" id="media{{ $image->id }}">
                                                 <img src="{{ asset('storage/' . $image->media_url) }}" width="100"
                                                     alt="">
+                                                <a href="javascript:void(0)" class="mt-3 ml-2 delete-media"
+                                                    data-id="{{ $image->id }}"><i class="fa fa-trash"></i></a>
                                             </div>
                                         @endforeach
                                     </div>
@@ -748,8 +752,8 @@
                             </div>
                             @if (isset($detail->object->media_url))
                                 <center>
-                                    <img src="{{ asset('storage/' . $detail->object->media_url) }}" width="400" class="mt-2"
-                                        alt="">
+                                    <img src="{{ asset('storage/' . $detail->object->media_url) }}" width="400"
+                                        class="mt-2" alt="">
                                 </center>
                             @endif
                         </div>
@@ -1433,5 +1437,34 @@
             $('.select2').select2();
             $('.select2').css('width', '100%');
         })
+    </script>
+
+    <script>
+        $('.delete-media').click(function() {
+            let media_id = $(this).attr('data-id');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You won\'t be able to revert this!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ url('delete-media') }}/" + media_id,
+                        type: "GET",
+                        success: function(data) {
+                            toastr.success('Media Deleted Successfully!');
+                            $('#media' + media_id).remove();
+                        },
+                        error: function(xhr, status, error) {
+                            toastr.error('Something Went Wrong!');
+                        }
+                    });
+                }
+            });
+        });
     </script>
 @endpush
