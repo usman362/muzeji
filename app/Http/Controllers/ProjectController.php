@@ -91,7 +91,9 @@ class ProjectController extends Controller
             $projects = Project::where('user_id', auth()->user()->id)->get();
             $exhibition = Exhibition::with(['pois' => function ($q) {
                 $q->with('detail')->get();
-            }])->where('user_id', auth()->user()->id)->findOrFail($id);
+            }])->whereHas('project',function($q){
+                $q->where('user_id', auth()->user()->id);
+            })->findOrFail($id);
         }
         return view('project-details', compact('projects', 'exhibition'));
     }
