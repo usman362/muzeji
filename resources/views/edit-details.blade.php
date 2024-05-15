@@ -14,7 +14,7 @@
             @csrf
             <div class="project-details">
                 <div class="main-title">
-                    <b><input type="text" class="form-control mb-2" name="main_title" value="{{ $poi->title }}"></b>
+                    <b><input type="text" class="form-control mb-2" name="main_title" value="{{ $poi->title }}" required></b>
                     <span>Main Title</span>
                 </div>
 
@@ -34,17 +34,17 @@
                         <div id="{{ $detail->language }}" class="tab-content">
                             <input type="hidden" name="main_id[]" value="{{ $detail->id }}">
                             <div class="title-1"><input type="text" class="form-control" value="{{ $detail->title }}"
-                                    name="title[]">
+                                    name="title[]" required>
                             </div>
                             <div class="paragraph">
-                                <textarea name="description[]" id="" class="form-control" rows="10">{{ $detail->description }}</textarea>
+                                <textarea name="description[]" id="" class="form-control" rows="10" required>{{ $detail->description }}</textarea>
                             </div>
 
                             <div class="mt-2 flag-language">
                                 <div class="row">
                                     <div class="col-md-6 p-1">
                                         <sub for="">Language</sub>
-                                        <select name="language[]" id="language" class="form-control select2 p">
+                                        <select name="language[]" id="language" class="form-control select2 p" required>
                                             <option value="en" @selected($detail->language == 'en')>English</option>
                                             <option value="ar" @selected($detail->language == 'ar')>Arabic</option>
                                             <option value="de" @selected($detail->language == 'de')>German</option>
@@ -111,7 +111,7 @@
                                     </div>
                                     <div class="col-md-6 p-1">
                                         <sub for="">Country</sub>
-                                        <select name="flag[]" id="flag" class="form-control select2">
+                                        <select name="flag[]" id="flag" class="form-control select2" required>
                                             <option @selected($detail->flag == 'ad') value="ad">Andorra</option>
                                             <option @selected($detail->flag == 'ae') value="ae">United Arab Emirates
                                             </option>
