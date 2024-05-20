@@ -978,6 +978,8 @@ button {
 
 .project-submenu {
     width: 100%;
+    height: 360px;
+    overflow-y: scroll;
 }
 
 .submenu-item {

@@ -17,7 +17,7 @@
                     <i class="fa fa-chevron-down"></i>
                 </div>
                 <div class="submenu project-submenu" id="dropdown-items">
-                    @foreach ($projects as $key => $project)
+                    @foreach ($poi_projects as $key => $project)
                         <a href="{{ $project->id == request()->project ? 'javascript:void(0)' : url('statistics') . '?project=' . $project->id }}"
                             class="submenu-item {{ $project->id == request()->project ? 'active' : '' }}"
                             onclick="onChangeDropdown(event,'project-select','{{ $project->title }}','dropdown-items' )">
