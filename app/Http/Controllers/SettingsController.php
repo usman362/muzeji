@@ -58,7 +58,7 @@ class SettingsController extends Controller
     public function statistics(Request $request)
     {
         if (auth()->user()->is_admin == true) {
-            $projects = POI::all();
+            $projects = Project::all();
             $project = POI::find($request->project);
             if (!empty($request->project)) {
                 $visits = POIVisit::with('poi')->where('poi_id', $request->project)->get()->groupBy('device');
@@ -182,12 +182,12 @@ class SettingsController extends Controller
                     });
                 }])->first();
             }
-            $projects = POI::with(['exhibition'=>function($q) use ($request){
-                $q->whereHas('project',function($p) use ($request){
-                    $p->where('user_id',auth()->user()->id);
-                });
-            }])->get();
-            // $projects = Project::where('user_id', auth()->user()->id)->get();
+            // $projects = POI::with(['exhibition'=>function($q) use ($request){
+            //     $q->whereHas('project',function($p) use ($request){
+            //         $p->where('user_id',auth()->user()->id);
+            //     });
+            // }])->get();
+            $projects = Project::where('user_id', auth()->user()->id)->get();
             // $project = Project::where('user_id', auth()->user()->id)->first();
             $visits = POIVisit::with('poi')->where('poi_id', $project->id)->get()->groupBy('device');
             $computerVisits = POIVisit::where('poi_id', $project->id)->where('device_type', 'Computer')->get()->groupBy('device');
