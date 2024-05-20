@@ -29,7 +29,7 @@
                 <div class="chart-heading">
                     <div>
                         <p>Total views of this exebition</p>
-                        <h1>{{ $computerVisits + $phoneVisits + $tabletVisits }}</h1>
+                        <h1>{{ $computerVisits->count() + $phoneVisits->count() + $tabletVisits->count() }}</h1>
                     </div>
                     <i class="fa fa-info-circle"></i>
                 </div>
@@ -111,9 +111,9 @@
             },
             legend: {
                 data: [
-                    @foreach ($visits as $visit)
-                        "{{ $visit[0]->poi->detail->title ?? '' }}",
-                    @endforeach
+                    "Computer",
+                    "Tablet",
+                    "Phone"
                 ],
                 top: "25px",
             },
@@ -133,13 +133,39 @@
                 type: "value",
             },
             series: [
-                @foreach ($visits as $visit)
+                @foreach ($computerVisits as $computerVisit)
                     {
-                        name: "{{ $visit[0]->poi->detail->title ?? '' }}",
+                        name: "Computer",
                         type: "line",
                         data: [
                             @for ($i = 1; $i <= 12; ++$i)
-                                {{ \App\Helpers\Helpers::getViews($visit[0]->poi_id, $i) }},
+                                {{ \App\Helpers\Helpers::getViews($computerVisit[0]->poi_id, $i) }},
+                            @endfor
+                        ],
+
+                    },
+                @endforeach
+
+                @foreach ($tabletVisits as $tabletVisit)
+                    {
+                        name: "Tablet",
+                        type: "line",
+                        data: [
+                            @for ($i = 1; $i <= 12; ++$i)
+                                {{ \App\Helpers\Helpers::getViews($tabletVisit[0]->poi_id, $i) }},
+                            @endfor
+                        ],
+
+                    },
+                @endforeach
+
+                @foreach ($phoneVisits as $phoneVisit)
+                    {
+                        name: "Phone",
+                        type: "line",
+                        data: [
+                            @for ($i = 1; $i <= 12; ++$i)
+                                {{ \App\Helpers\Helpers::getViews($phoneVisit[0]->poi_id, $i) }},
                             @endfor
                         ],
 
@@ -165,15 +191,15 @@
                 type: "pie",
                 radius: "50%",
                 data: [{
-                        value: {{ $computerVisits }},
+                        value: {{ $computerVisits->count() }},
                         name: "Computer"
                     },
                     {
-                        value: {{ $tabletVisits }},
+                        value: {{ $tabletVisits->count() }},
                         name: "Tablet"
                     },
                     {
-                        value: {{ $phoneVisits }},
+                        value: {{ $phoneVisits->count() }},
                         name: "Phone"
                     },
                 ],
