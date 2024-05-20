@@ -9,15 +9,17 @@
         <div class="main-heading">
             <h1>Statistics</h1>
         </div>
+
         <div class="statistics-container">
             <div class="projects-dropdown dropdown">
                 <div class="dropdown-box">
-                    <span id="project-select">{{ !empty($project) ? $project->title : 'Select the Project'}}</span>
+                    <span id="project-select">{{ !empty($project) ? $project->title : 'Select the Project' }}</span>
                     <i class="fa fa-chevron-down"></i>
                 </div>
                 <div class="submenu project-submenu" id="dropdown-items">
                     @foreach ($projects as $key => $project)
-                        <a href="{{ $project->id == request()->project ? 'javascript:void(0)' : url('statistics').'?project='.$project->id }}" class="submenu-item {{$project->id == request()->project  ? 'active' : ''}}"
+                        <a href="{{ $project->id == request()->project ? 'javascript:void(0)' : url('statistics') . '?project=' . $project->id }}"
+                            class="submenu-item {{ $project->id == request()->project ? 'active' : '' }}"
                             onclick="onChangeDropdown(event,'project-select','{{ $project->title }}','dropdown-items' )">
                             {{ $project->title }} <i class="fa fa-check"></i>
                         </a>
@@ -25,69 +27,73 @@
                 </div>
             </div>
 
-            <div class="line-chart-section">
-                <div class="chart-heading">
-                    <div>
-                        <p>Total views of this exebition</p>
-                        <h1>{{ $computerVisits->count() + $phoneVisits->count() + $tabletVisits->count() }}</h1>
-                    </div>
-                    <i class="fa fa-info-circle"></i>
-                </div>
-                <div id="main" style="width: 100%; height: 500px"></div>
-            </div>
-            <div class="pie-charts-section">
-                <div class="pie-chart">
+            @if (!empty(request('project')))
+                <div class="line-chart-section">
                     <div class="chart-heading">
                         <div>
-                            <p>Devices</p>
-                            <h1>{{ $totalDevices }}</h1>
-                            <small>Secondary text</small>
+                            <p>Total views of this exebition</p>
+                            <h1>{{ $computerVisits->count() + $phoneVisits->count() + $tabletVisits->count() }}</h1>
                         </div>
                         <i class="fa fa-info-circle"></i>
                     </div>
-                    <div id="pie-1" style="width: 100%; height: 400px"></div>
+                    <div id="main" style="width: 100%; height: 500px"></div>
                 </div>
-                <div class="pie-chart">
-                    <div class="chart-heading">
-                        <div>
-                            <p>Access</p>
-                            <h1>{{$short_codes->count()+$qrcodes->count()}}</h1>
-                            <small>From type</small>
+                <div class="pie-charts-section">
+                    <div class="pie-chart">
+                        <div class="chart-heading">
+                            <div>
+                                <p>Devices</p>
+                                <h1>{{ $totalDevices }}</h1>
+                                <small>Secondary text</small>
+                            </div>
+                            <i class="fa fa-info-circle"></i>
                         </div>
-                        <i class="fa fa-info-circle"></i>
+                        <div id="pie-1" style="width: 100%; height: 400px"></div>
                     </div>
-                    <div id="pie-2" style="width: 100%; height: 400px"></div>
+                    <div class="pie-chart">
+                        <div class="chart-heading">
+                            <div>
+                                <p>Access</p>
+                                <h1>{{ $short_codes->count() + $qrcodes->count() }}</h1>
+                                <small>From type</small>
+                            </div>
+                            <i class="fa fa-info-circle"></i>
+                        </div>
+                        <div id="pie-2" style="width: 100%; height: 400px"></div>
+                    </div>
                 </div>
-            </div>
+            @endif
         </div>
         <div class="main-heading" style="margin-bottom: 20px; margin-top: 60px">
             <h2>Projects History:</h2>
         </div>
-        <div class="statistics-project-table">
-            @foreach ($histories as $history)
-            @php
-                $daysAgo = \Carbon\Carbon::parse($history->created_at)->diffInDays();
-                if ($daysAgo < 1) {
-                    $formattedCreatedAt = 'Today';
-                } elseif ($daysAgo == 1) {
-                    $formattedCreatedAt = 'Yesterday';
-                } else {
-                    $formattedCreatedAt = (int)$daysAgo . ' days ago';
-                }
-            @endphp
-                <div class="table-row">
-                    <div class="place-title">
-                        <input type="checkbox" />
-                        <div class="title">
-                            <div>{{ $history->description }}</div>
-                            <div class="time-badge">
-                                <i class="fa fa-clock-o" aria-hidden="true"></i> {{$formattedCreatedAt}}
+        @if (!empty(request('project')))
+            <div class="statistics-project-table">
+                @foreach ($histories as $history)
+                    @php
+                        $daysAgo = \Carbon\Carbon::parse($history->created_at)->diffInDays();
+                        if ($daysAgo < 1) {
+                            $formattedCreatedAt = 'Today';
+                        } elseif ($daysAgo == 1) {
+                            $formattedCreatedAt = 'Yesterday';
+                        } else {
+                            $formattedCreatedAt = (int) $daysAgo . ' days ago';
+                        }
+                    @endphp
+                    <div class="table-row">
+                        <div class="place-title">
+                            <input type="checkbox" />
+                            <div class="title">
+                                <div>{{ $history->description }}</div>
+                                <div class="time-badge">
+                                    <i class="fa fa-clock-o" aria-hidden="true"></i> {{ $formattedCreatedAt }}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            @endforeach
-        </div>
+                @endforeach
+            </div>
+        @endif
     </div>
 @endsection
 
@@ -230,11 +236,11 @@
                 type: "pie",
                 radius: "50%",
                 data: [{
-                        value: {{$short_codes->count()}},
+                        value: {{ $short_codes->count() }},
                         name: "Short Code"
                     },
                     {
-                        value: {{$qrcodes->count()}},
+                        value: {{ $qrcodes->count() }},
                         name: "QR Code"
                     },
                 ],
