@@ -176,23 +176,27 @@ class SettingsController extends Controller
             $histories = ProjectHistory::where('project_id', $projectId->project_id)->orderBy('created_at','desc')->get();
         } else {
             if(!empty($request->project)){
-                $project = POI::with(['exhibition'=>function($q) use ($request){
+                $project = POI::whereHas('exhibition',function($q) use ($request){
                     $q->whereHas('project',function($p) use ($request){
                         $p->where('user_id',auth()->user()->id);
                     });
-                }])->where('poi_id',$request->project)->first();
+                })->find($request->project);
+                if(empty($project)){
+                    session()->flash('error', 'Project not Found!');
+                    return redirect(url('/statistics'));
+                }
             }else{
-                $project = POI::with(['exhibition'=>function($q) use ($request){
+                $project = POI::whereHas('exhibition',function($q) use ($request){
                     $q->whereHas('project',function($p) use ($request){
                         $p->where('user_id',auth()->user()->id);
                     });
-                }])->first();
+                })->first();
             }
-            $poi_projects = POI::with(['exhibition'=>function($q) use ($request){
-                $q->whereHas('project',function($p) use ($request){
+            $poi_projects = POI::with('exhibition')->whereHas('exhibition',function($q) use ($request){
+                $q->with('project')->whereHas('project',function($p) use ($request){
                     $p->where('user_id',auth()->user()->id);
                 });
-            }])->get();
+            })->get();
             $projects = Project::where('user_id', auth()->user()->id)->get();
             // $project = Project::where('user_id', auth()->user()->id)->first();
             $visits = POIVisit::with('poi')->where('poi_id', $project->id)->get()->groupBy('device');
