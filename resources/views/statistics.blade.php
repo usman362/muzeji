@@ -27,7 +27,7 @@
                 </div>
             </div>
 
-            @if (!empty(request('project')))
+            @if (!empty(request('project')) || !empty(request('exhibition')))
                 <div class="line-chart-section">
                     <div class="chart-heading">
                         <div>
@@ -67,7 +67,7 @@
         <div class="main-heading" style="margin-bottom: 20px; margin-top: 60px">
             <h2>Projects History:</h2>
         </div>
-        @if (!empty(request('project')))
+        @if (!empty(request('project')) || !empty(request('exhibition')))
             <div class="statistics-project-table">
                 @foreach ($histories as $history)
                     @php
