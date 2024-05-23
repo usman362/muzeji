@@ -17,8 +17,13 @@
                     <i class="fa fa-chevron-down"></i>
                 </div>
                 <div class="submenu project-submenu" id="dropdown-items">
+                    @php
+                        if(!empty(request('exhibition'))){
+                            $reqExhibition = '&exhibition=' . request('exhibition');
+                        }
+                    @endphp
                     @foreach ($poi_projects as $key => $project)
-                        <a href="{{ $project->id == request()->project ? 'javascript:void(0)' : url('statistics') . '?project=' . $project->id }}"
+                        <a href="{{ $project->id == request()->project ? 'javascript:void(0)' : url('statistics') . '?project=' . $project->id . $reqExhibition }}"
                             class="submenu-item {{ $project->id == request()->project ? 'active' : '' }}"
                             onclick="onChangeDropdown(event,'project-select','{{ $project->title }}','dropdown-items' )">
                             {{ $project->title }} <i class="fa fa-check"></i>

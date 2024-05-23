@@ -59,7 +59,13 @@ class SettingsController extends Controller
     {
         if (auth()->user()->is_admin == true) {
             $projects = Project::all();
-            $poi_projects = POI::all();
+            if(!empty($request->exhibition)){
+                $poi_projects = POI::with(['exhibition'=>function($q) use ($request){
+                    $q->whereHas('project');
+                }])->where('exhibition_id',$request->exhibition)->get();
+            }else{
+                $poi_projects = POI::all();
+            }
             $project = POI::find($request->project);
             if (!empty($request->project)) {
                 $visits = POIVisit::with('poi')->where('poi_id', $request->project)->get()->groupBy('device');
