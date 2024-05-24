@@ -43,7 +43,7 @@
 
                             <div class="mt-2 flag-language">
                                 <div class="row">
-                                    <div class="col-md-6 p-1">
+                                    {{-- <div class="col-md-6 p-1">
                                         <sub for="">Language</sub>
                                         <select name="language[]" id="language" class="form-control select2 p" required>
                                             <option value="en" @selected($detail->language == 'en')>English</option>
@@ -109,8 +109,8 @@
                                             <option value="yo" @selected($detail->language == 'yo')>Yoruba</option>
                                             <option value="zu" @selected($detail->language == 'zu')>Zulu</option>
                                         </select>
-                                    </div>
-                                    <div class="col-md-6 p-1">
+                                    </div> --}}
+                                    <div class="col-md-12">
                                         <sub for="">Country</sub>
                                         <select name="flag[]" id="flag" class="form-control select2" required>
                                             <option @selected($detail->flag == 'ad') value="ad">Andorra</option>
