@@ -20,6 +20,8 @@
                     @php
                         if(!empty(request('exhibition'))){
                             $reqExhibition = '&exhibition=' . request('exhibition');
+                        }else{
+                            $reqExhibition = '';
                         }
                     @endphp
                     @foreach ($poi_projects as $key => $project)
