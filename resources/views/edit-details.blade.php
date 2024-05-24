@@ -21,7 +21,7 @@
 
                 <div class="flags-section">
                     @foreach ($poi->details as $key => $detail)
-                        <div class="tablinks active" id="defaultOpen" onclick="changeTab(event, '{{ $detail->language }}')">
+                        <div class="tablinks active" id="defaultOpen" onclick="changeTab(event, '{{ $detail->language.$key }}')">
                             <img src="https://hatscripts.github.io/circle-flags/flags/{{ $detail->flag }}.svg"
                                 alt="" width="36" />
                         </div>
@@ -32,7 +32,7 @@
                 </div>
                 <div id="main-lang-div">
                     @foreach ($poi->details as $key => $detail)
-                        <div id="{{ $detail->language }}" class="tab-content">
+                        <div id="{{ $detail->language.$key }}" class="tab-content">
                             <input type="hidden" name="main_id[]" value="{{ $detail->id }}">
                             <div class="title-1"><input type="text" class="form-control" value="{{ $detail->title }}"
                                     name="title[]" required>
@@ -666,26 +666,26 @@
                                 <div class="audio-input">
                                     <input type="file" id="audioInput{{ $key }}" class="d-none"
                                         name="audio{{ $key }}[]"
-                                        onchange="showFileName({{$key}},'select-audio{{ $key }}','audioInput{{ $key }}')"
+                                        onchange="showFileName({{ $key }},'select-audio{{ $key }}','audioInput{{ $key }}')"
                                         accept="audio/*" multiple />
                                     <div class=""></div>
                                     {{-- <div class="selected-file" id="selectedFile">Upload Logo</div> --}}
                                     <div class="input-box cursor-pointer" id="select-audio{{ $key }}"
                                         onclick="fileInputClick('audioInput{{ $key }}')">Upload some MP3 sounds
                                     </div>
-                                    <div class="input-icon cursor-pointer" id="recordButton">
+                                    <div class="input-icon cursor-pointer recordButton" id="recordButton{{ $key }}" data-id="{{$key}}">
                                         <img src="{{ asset('images/mic-icon.png') }}" alt="mic-icon" />
                                     </div>
-                                    <div class="input-icon cursor-pointer d-none" id="stopButton">
+                                    <div class="input-icon cursor-pointer stopButton d-none" id="stopButton{{ $key }}" data-id="{{$key}}">
                                         <img src="{{ asset('images/mic-icon.png') }}" alt="mic-icon" />
                                     </div>
-                                    <div class="input-icon cursor-pointer d-none" id="clearButton">
+                                    <div class="input-icon cursor-pointer clearButton d-none" data-id="{{$key}}" id="clearButton{{$key}}">
                                         <i class="fa fa-close"></i>
                                     </div>
                                 </div>
                             </div>
-                            <div class="playback mt-2">
-                                <audio src="" controls id="audio-playback" class="d-none"></audio>
+                            <div class="playback mt-2" id="playback{{$key}}">
+                                <audio src="" controls id="audio-playback{{$key}}" class="d-none"></audio>
                             </div>
                             @if ($detail->audios->count() > 0)
                                 <center>
@@ -709,10 +709,10 @@
                                 <div class="selected-file" id="selectedLogo{{ $detail->id }}">Upload Photos</div>
                                 <input type="file" id="imageInput{{ $detail->id }}" class="d-none"
                                     data-image="true" name="logo{{ $key }}[]"
-                                    onchange="showFileName({{$detail->id}},'selectedLogo{{ $detail->id }}','imageInput{{ $detail->id }}','image')"
+                                    onchange="showFileName({{ $detail->id }},'selectedLogo{{ $detail->id }}','imageInput{{ $detail->id }}','image')"
                                     accept="image/*" multiple />
                                 <div class=""></div>
-                                <div id="imagePreviewContainer{{$detail->id}}" class="m-2"></div>
+                                <div id="imagePreviewContainer{{ $detail->id }}" class="m-2"></div>
                             </div>
                             @if ($detail->images->count() > 0)
                                 <center>
@@ -777,42 +777,42 @@
 @push('scripts')
     <script>
         function showFileName(key, id, value, image = null) {
-    const fileInput = document.getElementById(value);
-    const selectedFile = document.getElementById(id);
-    const fileName = fileInput.files[0].name;
-    selectedFile.innerHTML = `${fileName}`;
+            const fileInput = document.getElementById(value);
+            const selectedFile = document.getElementById(id);
+            const fileName = fileInput.files[0].name;
+            selectedFile.innerHTML = `${fileName}`;
 
-    if (image == 'image') {
-        selectedFile.innerHTML = `selected`;
-        const input = fileInput; // Use fileInput instead of event.target
+            if (image == 'image') {
+                selectedFile.innerHTML = `selected`;
+                const input = fileInput; // Use fileInput instead of event.target
 
-        // Dynamically create and append imagePreviewContainer if it doesn't exist
-        let imagePreviewContainer = document.getElementById('imagePreviewContainer' + key);
-        if (!imagePreviewContainer) {
-            imagePreviewContainer = document.createElement('div');
-            imagePreviewContainer.id = 'imagePreviewContainer' + key;
-            // Append imagePreviewContainer to wherever it should go in your DOM
-            // For example, if it should go after selectedFile:
-            selectedFile.parentNode.appendChild(imagePreviewContainer);
-        }
-
-        imagePreviewContainer.innerHTML = ''; // Clear previous previews
-
-        if (input.files && input.files.length > 0) {
-            for (let i = 0; i < input.files.length; i++) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const imagePreview = document.createElement('img');
-                    imagePreview.src = e.target.result;
-                    imagePreview.style.maxWidth = '100px';
-                    imagePreview.style.maxHeight = '100px';
-                    imagePreviewContainer.appendChild(imagePreview);
+                // Dynamically create and append imagePreviewContainer if it doesn't exist
+                let imagePreviewContainer = document.getElementById('imagePreviewContainer' + key);
+                if (!imagePreviewContainer) {
+                    imagePreviewContainer = document.createElement('div');
+                    imagePreviewContainer.id = 'imagePreviewContainer' + key;
+                    // Append imagePreviewContainer to wherever it should go in your DOM
+                    // For example, if it should go after selectedFile:
+                    selectedFile.parentNode.appendChild(imagePreviewContainer);
                 }
-                reader.readAsDataURL(input.files[i]);
+
+                imagePreviewContainer.innerHTML = ''; // Clear previous previews
+
+                if (input.files && input.files.length > 0) {
+                    for (let i = 0; i < input.files.length; i++) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const imagePreview = document.createElement('img');
+                            imagePreview.src = e.target.result;
+                            imagePreview.style.maxWidth = '100px';
+                            imagePreview.style.maxHeight = '100px';
+                            imagePreviewContainer.appendChild(imagePreview);
+                        }
+                        reader.readAsDataURL(input.files[i]);
+                    }
+                }
             }
         }
-    }
-}
 
 
         function changeBoxColor(inputId, id) {
@@ -866,77 +866,9 @@
                             <div class="paragraph">
                                 <textarea name="description[]" id="" class="form-control" rows="10"></textarea>
                             </div>
-
                             <div class="mt-2 flag-language">
                                 <div class="row">
-                                    <div class="col-md-6 p-1">
-                                        <sub for="">Language</sub>
-                                <select name="language[]" id="language" class="form-control select2">
-                                    <option value="en">English</option>
-                                    <option value="ar">Arabic</option>
-                                    <option value="de">German</option>
-                                    <option value="fr">French</option>
-                                    <option value="es">Spanish</option>
-                                    <option value="it">Italian</option>
-                                    <option value="nl">Dutch</option>
-                                    <option value="ja">Japanese</option>
-                                    <option value="ko">Korean</option>
-                                    <option value="pt">Portuguese</option>
-                                    <option value="ru">Russian</option>
-                                    <option value="zh">Chinese</option>
-                                    <option value="hi">Hindi</option>
-                                    <option value="tr">Turkish</option>
-                                    <option value="id">Indonesian</option>
-                                    <option value="vi">Vietnamese</option>
-                                    <option value="th">Thai</option>
-                                    <option value="el">Greek</option>
-                                    <option value="sv">Swedish</option>
-                                    <option value="pl">Polish</option>
-                                    <option value="da">Danish</option>
-                                    <option value="fi">Finnish</option>
-                                    <option value="no">Norwegian</option>
-                                    <option value="he">Hebrew</option>
-                                    <option value="cs">Czech</option>
-                                    <option value="hu">Hungarian</option>
-                                    <option value="ro">Romanian</option>
-                                    <option value="sk">Slovak</option>
-                                    <option value="uk">Ukrainian</option>
-                                    <option value="bg">Bulgarian</option>
-                                    <option value="sr">Serbian</option>
-                                    <option value="hr">Croatian</option>
-                                    <option value="sl">Slovenian</option>
-                                    <option value="et">Estonian</option>
-                                    <option value="lt">Lithuanian</option>
-                                    <option value="lv">Latvian</option>
-                                    <option value="mk">Macedonian</option>
-                                    <option value="sq">Albanian</option>
-                                    <option value="hy">Armenian</option>
-                                    <option value="az">Azerbaijani</option>
-                                    <option value="eu">Basque</option>
-                                    <option value="be">Belarusian</option>
-                                    <option value="bs">Bosnian</option>
-                                    <option value="ka">Georgian</option>
-                                    <option value="is">Icelandic</option>
-                                    <option value="gl">Galician</option>
-                                    <option value="mt">Maltese</option>
-                                    <option value="et">Estonian</option>
-                                    <option value="lb">Luxembourgish</option>
-                                    <option value="mk">Macedonian</option>
-                                    <option value="mn">Mongolian</option>
-                                    <option value="ne">Nepali</option>
-                                    <option value="ps">Pashto</option>
-                                    <option value="fa">Persian</option>
-                                    <option value="rw">Kinyarwanda</option>
-                                    <option value="si">Sinhala</option>
-                                    <option value="so">Somali</option>
-                                    <option value="ta">Tamil</option>
-                                    <option value="te">Telugu</option>
-                                    <option value="ur">Urdu</option>
-                                    <option value="yo">Yoruba</option>
-                                    <option value="zu">Zulu</option>
-                                </select>
-                                </div>
-                                <div class="col-md-6 p-1">
+                                <div class="col-md-12">
                                     <sub for="">Country</sub>
                                         <select name="flag[]" id="flag" class="form-control select2">
                                             <option value="ad">Andorra</option>

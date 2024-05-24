@@ -1,41 +1,37 @@
 // audio recorder
 let recorder, audio_stream;
-const recordButton = document.getElementById("recordButton");
-recordButton.addEventListener("click", startRecording);
+// const recordButton = document.getElementById("recordButton");
+// recordButton.addEventListener("click", startRecording);
 
 // stop recording
-const stopButton = document.getElementById("stopButton");
-stopButton.addEventListener("click", stopRecording);
-stopButton.disabled = true;
+// const stopButton = document.getElementById("stopButton");
+// stopButton.addEventListener("click", stopRecording);
 
 // set preview
-const preview = document.getElementById("audio-playback");
-
-// set download button event
-// const downloadAudio = document.getElementById("downloadButton");
-// downloadAudio.addEventListener("click", downloadRecording);
-
-$('#clearButton').click(function(){
-    $('#audio-playback').addClass('d-none');
+// const preview = document.getElementById("audio-playback");
+$('.project-details').on('click','.clearButton',function(){
+    let id = $(this).attr('data-id');
+    $('#audio-playback'+id).addClass('d-none');
+    $('#audio-playback'+id).attr('src','');
+    $('.playback').find(`[name="audio_path${id}[]"]`).remove();
 });
 
-function startRecording() {
+$('.project-details').on('click','.recordButton',function(){
     // button settings
+    let id = $(this).attr('data-id');
+    let recordButton = $('#recordButton'+id);
+    let stopButton = $('#stopButton'+id);
+    let preview = $("#audio-playback"+id);
     recordButton.disabled = true;
-    $("#recordButton").addClass("d-none");
+    $("#recordButton"+id).addClass("d-none");
     stopButton.disabled = false;
-    $("#stopButton").removeClass("d-none");
-    $("#stopButton").css("border","2px solid red");
-    $('#clearButton').addClass('d-none');
+    $("#stopButton"+id).removeClass("d-none");
+    $("#stopButton"+id).css("border","2px solid red");
+    $('#clearButton'+id).addClass('d-none');
 
-
-    if (!$("#audio-playback").hasClass("d-none")) {
-        $("#audio-playback").addClass("d-none")
+    if (!$("#audio-playback"+id).hasClass("d-none")) {
+        $("#audio-playback"+id).addClass("d-none")
     };
-
-    // if (!$("#downloadContainer").hasClass("d-none")) {
-    //     $("#downloadContainer").addClass("d-none")
-    // };
 
     navigator.mediaDevices.getUserMedia({ audio: true })
         .then(function (stream) {
@@ -45,10 +41,10 @@ function startRecording() {
             // when there is data, compile into object for preview src
             recorder.ondataavailable = function (e) {
                 const url = URL.createObjectURL(e.data);
-                preview.src = url;
+                $("#audio-playback"+id).attr('src',url);
 
-                // set link href as blob url, replaced instantly if re-recorded
-                // downloadAudio.href = url;
+                // Send audio to server
+                sendAudioToServer(e.data,id);
             };
             recorder.start();
 
@@ -57,22 +53,41 @@ function startRecording() {
                 stopRecording();
             }, 300000);
         });
-}
+})
 
-function stopRecording() {
+$('.project-details').on('click','.stopButton',function(){
+    let id = $(this).attr('data-id');
+    let recordButton = $('#recordButton'+id);
+    let stopButton = $('#stopButton'+id);
+
+    stopButton.disabled = true;
     recorder.stop();
     audio_stream.getAudioTracks()[0].stop();
 
     // buttons reset
     recordButton.disabled = false;
-    $("#recordButton").removeClass("d-none");
+    $("#recordButton"+id).removeClass("d-none");
 
-    $("#stopButton").addClass("d-none");
+    $("#stopButton"+id).addClass("d-none");
     stopButton.disabled = true;
 
-    $("#audio-playback").removeClass("d-none");
-    $('#clearButton').removeClass('d-none');
-    // $("#downloadContainer").removeClass("d-none");
+    $("#audio-playback"+id).removeClass("d-none");
+    $('#clearButton'+id).removeClass('d-none');
+})
+
+function sendAudioToServer(audioBlob,id) {
+    const formData = new FormData();
+    formData.append('audio', audioBlob, 'recording.wav'); // Change the file name to .wav
+
+    fetch('/upload-audio', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    }).then(response => response.json())
+      .then(data => $('#playback'+id).append(`<input type="hidden" name="audio_path${id}[]" value="${data.path}"/>`))
+      .catch(error => console.error('Error:', error));
 }
 
 // function downloadRecording(){

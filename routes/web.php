@@ -46,4 +46,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('poi-short-code',[App\Http\Controllers\ProjectController::class,'short_code_view'])->name('poi.short_code_view');
 
     Route::get('statistics',[App\Http\Controllers\SettingsController::class,'statistics'])->name('settings.statistics');
+
+    Route::post('/upload-audio', [App\Http\Controllers\AudioController::class, 'store']);
 });

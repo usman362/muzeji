@@ -199,7 +199,7 @@ class ProjectController extends Controller
                     'poi_id' => $id,
                     'title' => $request->title[$key],
                     'description' => $request->description[$key],
-                    'language' => $request->language[$key],
+                    'language' => $request->language[$key] ?? 'en',
                     'flag' => $request->flag[$key],
                 ]);
 
@@ -216,7 +216,18 @@ class ProjectController extends Controller
                 }
                 if (!empty(request('audio' . $key))) {
                     foreach (request('audio' . $key) as $audioKey => $audio) {
-                        $audioPath = Helpers::fileUpload($audio, 'images/poi-audios');
+                        $audioPath = Helpers::fileUpload($audio, 'audios/poi-audios');
+                        POIMedia::create([
+                            'poi_id' => $id,
+                            'detail_id' => $detail->id,
+                            'type' => 'audio',
+                            'media_url' => $audioPath,
+                        ]);
+                    }
+                }
+
+                if (!empty(request('audio_path' . $key))) {
+                    foreach (request('audio_path' . $key) as $audioPathKey => $audioPath) {
                         POIMedia::create([
                             'poi_id' => $id,
                             'detail_id' => $detail->id,
