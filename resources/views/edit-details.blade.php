@@ -660,8 +660,8 @@
 
                             <div class="mp3-buttons">
                                 <div class="ai-checkbox">
-                                    <input type="checkbox" name="ai-checkbox[]" id="ai-checkbox" />
-                                    <label for="ai-checkbox">AI generate MP3</label>
+                                    <input type="checkbox" name="is_ai[]" id="ai_checkbox" {{$detail->is_ai == true ? 'checked' : ''}}/>
+                                    <label for="ai_checkbox">AI generate MP3</label>
                                 </div>
                                 <div class="audio-input">
                                     <input type="file" id="audioInput{{ $key }}" class="d-none"
@@ -1355,8 +1355,8 @@
 
                             <div class="mp3-buttons">
                                 <div class="ai-checkbox">
-                                    <input type="checkbox" name="ai-checkbox[]" id="ai-checkbox" />
-                                    <label for="ai-checkbox">AI generate MP3</label>
+                                    <input type="checkbox" name="is_ai[]" id="ai_checkbox" />
+                                    <label for="ai_checkbox">AI generate MP3</label>
                                 </div>
                                 <div class="audio-input">
                                     <input type="file" id="audioInput${keyId}" class="d-none"

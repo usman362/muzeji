@@ -10,6 +10,6 @@ class POIMedia extends Model
     use HasFactory;
 
     protected $fillable = [
-        'poi_id', 'type', 'media_url','detail_id'
+        'poi_id', 'type', 'media_url','detail_id','is_ai'
     ];
 }

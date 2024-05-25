@@ -14,7 +14,8 @@ class POIDetail extends Model
         'title',
         'description',
         'flag',
-        'use_google_translate'
+        'use_google_translate',
+        'is_ai'
     ];
 
 

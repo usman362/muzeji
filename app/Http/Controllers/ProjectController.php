@@ -194,6 +194,7 @@ class ProjectController extends Controller
                 $poi->title = $request->main_title;
                 $poi->save();
             }
+
             foreach ($request->main_id as $key => $mainId) {
                 $detail = POIDetail::updateOrCreate(['id' => $mainId], [
                     'poi_id' => $id,
@@ -201,6 +202,7 @@ class ProjectController extends Controller
                     'description' => $request->description[$key],
                     'language' => $request->language[$key] ?? 'en',
                     'flag' => $request->flag[$key],
+                    'is_ai' => isset($request->is_ai[$key]) ? 1 : 0,
                 ]);
 
                 if (!empty(request('logo' . $key))) {
