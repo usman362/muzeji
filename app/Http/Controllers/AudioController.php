@@ -12,7 +12,8 @@ class AudioController extends Controller
             $audio = $request->file('audio');
             $filename = time() . '-' . $audio->getClientOriginalName();
             $path = $audio->storeAs('public/audios/poi-audios', $filename);
-            return response()->json(['success' => true, 'path' => $path]);
+            $relativePath = str_replace('public/', '', $path);
+            return response()->json(['success' => true, 'path' => $relativePath]);
         }
 
         return response()->json(['success' => false, 'message' => 'No audio file uploaded.']);
