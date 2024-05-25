@@ -1358,21 +1358,34 @@
                                     <input type="checkbox" name="ai-checkbox[]" id="ai-checkbox" />
                                     <label for="ai-checkbox">AI generate MP3</label>
                                 </div>
-                                <div class="audio-input cursor-pointer" onclick="fileInputClick('audioInput${randomId}')">
-                                    <input type="file" id="audioInput${randomId}" class="d-none" name="audio${keyId}[]"
-                                        onchange="showFileName(${randomId},'select-audio${randomId}','audioInput${randomId}')" accept="audio/*" multiple/>
+                                <div class="audio-input">
+                                    <input type="file" id="audioInput${keyId}" class="d-none"
+                                        name="audio${keyId}[]"
+                                        onchange="showFileName(${keyId},'select-audio${keyId}','audioInput${keyId}')"
+                                        accept="audio/*" multiple />
                                     <div class=""></div>
-                                    <div class="input-box" id="select-audio${randomId}">Upload some MP3 sounds</div>
-                                    <div class="input-icon">
+                                    <div class="input-box cursor-pointer" id="select-audio${keyId}"
+                                        onclick="fileInputClick('audioInput${keyId}')">Upload some MP3 sounds
+                                    </div>
+                                    <div class="input-icon cursor-pointer recordButton" id="recordButton${keyId}" data-id="${keyId}">
                                         <img src="{{ asset('images/mic-icon.png') }}" alt="mic-icon" />
                                     </div>
+                                    <div class="input-icon cursor-pointer stopButton d-none" id="stopButton${keyId}" data-id="${keyId}">
+                                        <img src="{{ asset('images/mic-icon.png') }}" alt="mic-icon" />
+                                    </div>
+                                    <div class="input-icon cursor-pointer clearButton d-none" data-id="${keyId}" id="clearButton${keyId}">
+                                        <i class="fa fa-close"></i>
+                                    </div>
                                 </div>
+                            </div>
+                            <div class="playback mt-2" id="playback${keyId}">
+                                <audio src="" controls id="audio-playback${keyId}" class="d-none"></audio>
                             </div>
                             <div class="input-large-box cursor-pointer" onclick="fileInputClick('imageInput${randomId}')">
                                 <div class="input-box-icon">
                                     <img src="{{ asset('images/photo-icon.png') }}" alt="file-icon" />
                                 </div>
-                                <div class="selected-file" id="selectedLogo${randomId}">Upload Logo</div>
+                                <div class="selected-file" id="selectedLogo${randomId}">Upload Photos</div>
                                 <input type="file" id="imageInput${randomId}" class="d-none" data-image="true" name="logo${keyId}[]"
                                     onchange="showFileName(${randomId},'selectedLogo${randomId}','imageInput${randomId}','image')" accept="image/*" />
                                 <div class=""></div>
