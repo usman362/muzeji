@@ -175,11 +175,12 @@ class ProjectController extends Controller
                 });
             })->findOrFail($id);
         }
-        return view('edit-details', compact('projects', 'poi'));
+        return view('edit-details', compact('projects', 'poi','id'));
     }
 
     public function poiUpdate(Request $request, $id)
     {
+        // dd($request->all());
         try {
             if (auth()->user()->is_admin == true) {
                 $poi = POI::with('exhibition:id,project_id')->findOrFail($id);

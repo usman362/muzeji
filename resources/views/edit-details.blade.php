@@ -849,7 +849,7 @@
 
     <script>
         $(document).ready(function() {
-            let keyId = parseInt('{{ $poi->details->count() }}') + 1;
+            let keyId = parseInt('{{ $poi->details->count() }}');
             $('.add-lang-btn').click(function() {
                 var randomId = Math.random().toString(36).substring(7);
                 var newFlagSection = `
@@ -1387,7 +1387,7 @@
                                 </div>
                                 <div class="selected-file" id="selectedLogo${randomId}">Upload Photos</div>
                                 <input type="file" id="imageInput${randomId}" class="d-none" data-image="true" name="logo${keyId}[]"
-                                    onchange="showFileName(${randomId},'selectedLogo${randomId}','imageInput${randomId}','image')" accept="image/*" />
+                                    onchange="showFileName(${randomId},'selectedLogo${randomId}','imageInput${randomId}','image')" accept="image/*" multiple/>
                                 <div class=""></div>
                                 <div id="imagePreviewContainer${randomId}" class="m-2"></div>
                             </div>
